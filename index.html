@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>WorldArena: A Unified Benchmark for Evaluating Perception and Functional Utility of Embodied World Models</title>
+
+    <link rel="icon" href="assets_common/icons/worldbench-circle.png" type="image/x-icon">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="./static/js/distill_template.v2.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+    <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+    <script defer="" src="./static/js/hider.js"></script>
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/worldarena.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script defer src="./static/js/medium-zoom.min.js"></script>
+    <script defer src="./static/js/zoom.js"></script>
+
+</head>
+
+<body>
+
+    <div class="fixed-sidebar">
+        <h4>Contents</h4>
+        <nav>
+            <a href="#overview" class="active">Overview</a>
+            <a href="#comparison">Benchmark Comparison</a>
+            <a href="#architecture">Evaluation System</a>
+            <a href="#leaderboard">Leaderboard</a>
+            <a href="#examples">Visualization Examples</a>
+        </nav>
+    </div>
+
+    <section class="hero-section">
+        <div>
+            <h1 class="main-title">WorldArena</h1>
+            <p class="subtitle">A Unified Benchmark for Evaluating Perception and Functional Utility of Embodied World Models</p>
+            <div class="action-buttons">
+                <a href="https://github.com/worldarena/WorldArena" class="btn btn-secondary" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://huggingface.co/spaces/WorldArena/WorldArena" class="btn btn-secondary" target="_blank">
+                    <i class="fas fa-trophy"></i> Leaderboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section id="overview">
+            <h2 class="section-title">Overview</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #334155;">
+                    <strong style="color: #2563eb;">WorldArena</strong> is a unified benchmark designed to systematically evaluate embodied world models across both <strong style="color: #2563eb;">perceptual</strong> and <strong style="color: #2563eb;">functional</strong> dimensions. WorldArena assesses models through three dimensions: <strong style="color: #2563eb;">video perception quality</strong>, measured with sixteen metrics across six sub-dimensions; <strong style="color: #2563eb;">embodied task functionality</strong>, which evaluates world models as synthetic data engines, policy evaluators, and action planners. Furthermore, we propose <strong style="color: #2563eb;">EWMScore</strong>, a holistic metric integrating multi-dimensional performance into a single interpretable index.This work provides a framework for tracking progress toward truly functional world models in embodied AI.
+                </p>
+            </div>
+        </section>
+
+        <section id="comparison">
+            <h2 class="section-title">Comparison with Existing Benchmarks</h2>
+            <div class="card" style="border: 1px solid #000; box-shadow: none;">
+                <div class="benchmark-table-container" style="width: 100%; overflow-x: auto; margin: 20px 0;">
+                    <table class="benchmark-table" style="width: 100%; border-collapse: collapse; font-size: 0.95rem; color: #000000; background: white; border: 1px solid #000;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; color: #000000;">
+                                <th rowspan="2" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
+                                    Benchmark
+                                </th>
+                                <th colspan="6" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
+                                    Video Quality
+                                </th>
+                                <th colspan="3" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
+                                    Embodied Tasks
+                                </th>
+                                <th rowspan="2" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
+                                    Human
+                                </th>
+                            </tr>
+                            <tr style="background-color: #f1f5f9; color: #000000;">
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Visual Quality</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Motion Quality</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Content Consist.</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Physics Adher.</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Control ability</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">3D Acc.</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Data Engine</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Policy Eval.</th>
+                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Action Planner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldModelBench</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldSimBench</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldScore</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">4DWorldBench</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">EWMBench</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldEval</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">World-in-World</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td></tr>
+                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WoW-World-Eval</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
+
+                            <tr style="color: #000000; font-weight: 950; font-size: 1.25rem; background-color: #ffffff;">
+                                <td style="border: 1px solid #000; padding: 15px; text-align: center; padding-left: 20px;">WorldArena</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
+                    Table 1: Comprehensive comparison of WorldArena with existing world model benchmarks
+                </p>
+            </div>
+        </section>
+
+
+
+        <section id="architecture">
+            <h2 class="section-title">Evaluation System</h2>
+            <p class="section-subtitle">
+                WorldArena's comprehensive evaluation framework encompasses both perceptual quality and functional utility
+            </p>
+            
+            <!-- Perceptual Evaluation -->
+            <div class="card">
+                <h3 class="card-title">Perceptual Evaluation</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    WorldArena measures multi-faceted video quality, comprising 16 numerical metrics across 6 key sub-dimensions,, including visual quality, motion quality, content consistency, physics adherence, 3D accuracy, and controllability:
+                </p>
+                
+                <!-- 插入图片 -->
+                <div>
+                    <img src="assets_common/photos/Perceptual evaluation.svg" alt="Perceptual Evaluation Metrics" class="perceptual-image">
+                    <p class="caption" style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
+                        Figure 1: Six dimensions of perceptual evaluation with 16 specific metrics
+                    </p>
+                </div>
+                
+                <!-- 指标网格 -->
+                <div class="metrics-grid">
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">Visual Quality</span></h4>
+                        <ul class="metric-list">
+                            <li>Image Quality</li>
+                            <li>Aesthetic Quality</li>
+                            <li>JEPA Similarity</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">Motion Quality</span></h4>
+                        <ul class="metric-list">
+                            <li>Dynamic Degree</li>
+                            <li>Flow Score</li>
+                            <li>Motion Smoothness</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">Content Consistency</span></h4>
+                        <ul class="metric-list">
+                            <li>Subject Consistency</li>
+                            <li>Background Consistency</li>
+                            <li>Photometric Consistency</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">Physics Adherence</span></h4>
+                        <ul class="metric-list">
+                            <li>Interaction Quality</li>
+                            <li>Trajectory Accuracy</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">3D Accuracy</span></h4>
+                        <ul class="metric-list">
+                            <li>Depth Accuracy</li>
+                            <li>Perspectivity</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="metric-category">
+                        <h4><span class="worldarena-badge">Controllability</span></h4>
+                        <ul class="metric-list">
+                            <li>Instruction Following</li>
+                            <li>Semantic Alignment</li>
+                            <li>Action Following</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 修正后的EWMScore公式 -->
+                <div class="formula-box">
+                    <strong>EWMScore</strong> is defined as the arithmetic mean of the 16 basic metrics listed above, with all scores normalized and linearly scaled to a range of [0, 100]. It serves as a comprehensive evaluation metric, where a higher value signifies superior overall model performance in both perception and functional utility.
+                </div>
+            </div>
+            
+            <!-- Embodied Task Functionality -->
+            <div class="card">
+                <h3 class="card-title">Embodied Task Functionality</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    WorldArena evaluates model performance in three core downstream tasks: <strong>Data Engine</strong>, <strong>Policy Evaluator</strong>, and <strong>Action Planner</strong>.
+
+                </p>
+                
+                <!-- 架构图 -->
+                <div>
+                    <img src="assets_common/photos/Embodied_evaluation.svg" alt="Embodied Task Functionality Evaluation" class="perceptual-image">
+                    <p class="caption" style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
+                        Figure 2: Embodied Task Functionality Evaluation Framework
+                    </p>
+                </div>
+                
+                <!-- 三个功能区域的详细解释 -->
+                <div class="highlight-box">
+                    <h4>Embodied Data Engine</h4>
+                    <p style="line-height: 1.7;">
+                      World models can generate future observations based on external instructions, enabling synthetic data generation to supplement training data for downstream embodied policy models and alleviate the scarcity of real-world data. In this part, we treat world models as embodied data synthesis engines and evaluate their performance by measuring the gain they provide to policy models.
+
+                      We employ a two-phase training procedure. In the first phase, we fine-tune the world model on the RobotTwin 2.0 dataset and generate synthetic videos conditioned on the first frame and external instructions. In the second phase, we freeze the world model’s weights and integrate an inverse dynamics model (IDM) to extract actions from video features. This process produces paired video-action sequences.
+                      We then evaluate the impact of world model–generated synthetic data by training a baseline π₀.₅ policy model with varying amounts of synthetic data. The performance gain of the policy model reflects the world model’s capability to enhance policy learning.
+                      
+                    </p>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>Embodied Policy Evaluator</h4>
+                    <p style="line-height: 1.7;">
+                        We assess the capability of world models as environment proxies for evaluating policy performance. We train a series of policy models π₀.₅ with varying capabilities using the RoboTwin 2.0 dataset. These models are evaluated by interacting with an action-controllable world model, generating observation videos through a rollout process that continues until it exceeds 20% more frames than the corresponding ground truth video. Task success is evaluated using a VLM, which determines whether the embodied task was executed successfully. 
+
+                        The success rate from the world model's evaluation is compared to that from the RoboTwin simulator. A high correlation between the two suggests effective simulation of real-world dynamics, while a low correlation indicates a mismatch in environmental transition simulation.
+                    </p>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>Embodied Action Planner</h4>
+                    <p style="line-height: 1.7;">
+                        By predicting future state transitions, world models can function as the action-planning "brain" of an embodied agent. In this part, we investigate the ability of world models to execute embodied tasks in a closed-loop manner. Similar to the data synthesis engine setup, we pair the world model with an inverse dynamics model, where the world model takes textual instructions and the initial frame as input and outputs the corresponding action sequence for future operations. This sequence is then executed in the RoboTwin simulator, and the task success rate is measured to evaluate the world model's performance in closed-loop action execution.
+                    </p>
+                </div>
+            </div>
+            
+        </section>
+
+        <section id="leaderboard">
+            <h2 class="section-title">Leaderboard</h2>
+            <div class="card">
+                <div style="width:100%; overflow:hidden; border-radius: 12px;">
+                    <iframe src="https://worldarena-worldarena.hf.space" style="width:100%; height:720px; border:0;" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="examples">
+            <h2 class="section-title">Visualization Examples</h2>
+            <div class="card">
+                <div class="dim-tabs" id="dim-tabs-container"></div>
+                <div class="sub-tabs" id="sub-tabs-container"></div>
+
+                <div class="scene-selection-area">
+                    <div class="scene-group" id="scene-group-container"></div>
+                </div>
+
+                <div id="visualizer-area" style="min-height: 800px;">
+                    <div class="video-compare-wrapper" id="primary-compare">
+                        <div class="slider-container" id="slider-container-1">
+                            <div class="video-layer layer-left" id="layer-left-1">
+                                <video id="vid-top-left" loop muted autoplay playsinline></video>
+                                <div class="video-label label-left" id="label-tl" style="display: block !important;">Good Case 1</div>
+                            </div>
+                            <div class="video-layer layer-right">
+                                <video id="vid-top-right" loop muted autoplay playsinline></video>
+                                <div class="video-label label-right" id="label-tr" style="display: block !important;">Good Case 2</div>
+                            </div>
+                            <div class="slider-handle" id="handle-1" style="left: 50%;">
+                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="instruction-display" style="display: none; margin: 20px 0; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ddd;">
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 1 Instruction</span>
+                                <p id="text-good-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #007bff;"></p>
+                            </div>
+                            <div style="width: 1px; background: #eee;"></div>
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 2 Instruction</span>
+                                <p id="text-bad-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #dc3545;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-compare-wrapper" id="secondary-compare" style="display: none;">
+                        <div class="slider-container" id="slider-container-2">
+                            <div class="video-layer layer-left" id="layer-left-2">
+                                <video id="vid-bottom-left" loop muted autoplay playsinline></video>
+                                <div class="video-label label-left" id="label-bl" style="display: block !important;">Bad Case 1</div>
+                            </div>
+                            <div class="video-layer layer-right">
+                                <video id="vid-bottom-right" loop muted autoplay playsinline></video>
+                                <div class="video-label label-right" id="label-br" style="display: block !important;">Bad Case 2</div>
+                            </div>
+                            <div class="slider-handle" id="handle-2" style="left: 50%;">
+                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 20px;">
+                        <span class="extra-label">Ground Truth</span>
+                        <div class="gt-video-box"><video id="vid-gt" loop muted autoplay playsinline></video></div>
+                    </div>
+                </div>
+
+                    <div id="instruction-display" style="display: none; margin: 20px 0; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ddd;">
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 1 Instruction</span>
+                                <p id="text-good-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #007bff;"></p>
+                            </div>
+                            <div style="width: 1px; background: #eee;"></div>
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 2 Instruction</span>
+                                <p id="text-bad-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #dc3545;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-compare-wrapper" id="secondary-compare" style="display: none;">
+                        <div class="slider-container" id="slider-container-2">
+                            <div class="video-layer layer-left">
+                                <video id="vid-bottom-left" loop muted autoplay playsinline></video>
+                                <div class="video-label label-left" id="label-bl" style="display: block !important;">Bad Case 1</div>
+                            </div>
+                            <div class="video-layer layer-right">
+                                <video id="vid-bottom-right" loop muted autoplay playsinline></video>
+                                <div class="video-label label-right" id="label-br" style="display: block !important;">Bad Case 2</div>
+                            </div>
+                            <div class="slider-handle" id="handle-2">
+                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 20px;">
+                        <span class="extra-label">Ground Truth</span>
+                        <div class="gt-video-box"><video id="vid-gt" loop muted autoplay playsinline></video></div>
+                    </div>
+                </div>
+
+                    <div id="instruction-display" style="display: none; margin: 30px 0; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #dee2e6; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                        <div style="display: flex; gap: 30px;">
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.75rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Case 1 Instruction</span>
+                                <div id="text-good-content" style="font-size: 1rem; color: #212529; line-height: 1.5; border-left: 4px solid #007bff; padding-left: 15px;"></div>
+                            </div>
+                            <div style="width: 1px; background: #eee;"></div>
+                            <div style="flex: 1;">
+                                <span style="font-size: 0.75rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Case 2 Instruction</span>
+                                <div id="text-bad-content" style="font-size: 1rem; color: #212529; line-height: 1.5; border-left: 4px solid #dc3545; padding-left: 15px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 30px;">
+                        <span class="extra-label">Ground Truth (GT) Reference</span>
+                        <div class="gt-video-box">
+                            <video id="vid-gt" loop muted autoplay playsinline></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <div class="footer">
+        <div style="margin-bottom: 20px;">
+            <a href="https://github.com/worldarena" target="_blank" style="margin: 0 15px; color: white;"><i class="fab fa-github fa-2x"></i></a>
+            <a href="https://huggingface.co/spaces/WorldArena" target="_blank" style="margin: 0 15px; color: white;"><i class="fas fa-trophy fa-2x"></i></a>
+        </div>
+        <p style="opacity: 0.7; font-size: 0.9rem;">
+            Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: #60a5fa;">CC BY-SA 4.0</a>
+        </p>
+    </div>
+
+    <script src="./static/js/worldarena.js"></script>
+</body>
+</html>
