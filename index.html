@@ -1,421 +1,477 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <title>WorldArena: A Unified Benchmark for Evaluating Perception and Functional Utility of Embodied World Models</title>
-
-    <link rel="icon" href="assets_common/icons/worldbench-circle.png" type="image/x-icon">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WorldArena 2.0: Extending Embodied World Model Benchmarking on Modality, Functionality and Platform</title>
 
-    <script src="./static/js/distill_template.v2.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
-    <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
-
-    <script defer="" src="./static/js/hider.js"></script>
-    <link rel="stylesheet" href="./static/css/style.css">
-    <link rel="stylesheet" href="./static/css/worldarena.css">
+    <link rel="icon" href="assets_common/icons/worldbench-circle.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/worldarena-custom.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
-    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script defer src="./static/js/worldarena-custom.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script defer src="./static/js/medium-zoom.min.js"></script>
-    <script defer src="./static/js/zoom.js"></script>
-
+    <style>
+        :root {
+            --wa-green: #B8D9A8;
+            --wa-green-dark: #8DB27E;
+            --wa-green-light: #EEF7EA;
+            --wa-purple: #B5A8E5;
+            --wa-blue: #8EC5E8;
+            --wa-text: #253238;
+            --wa-muted: #5b6670;
+            --wa-border: rgba(37, 50, 56, 0.12);
+            --wa-card: rgba(255, 255, 255, 0.74);
+            --wa-shadow: 0 18px 45px rgba(35, 54, 34, 0.12);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: "Rubik", sans-serif;
+            color: var(--wa-text);
+            background: radial-gradient(circle at center, #EEF7EA 0%, #DCEFD2 35%, #F7FAF5 100%);
+            min-height: 100vh;
+        }
+        a { color: inherit; text-decoration: none; }
+        .page-shell { width: 100%; max-width: 1280px; margin: 0 auto; padding: 24px 0 56px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
+        .sidebar {
+            position: sticky; top: 24px; align-self: start; padding: 18px 16px; border: 1px solid rgba(37,50,56,.12);
+            border-radius: 18px; background: rgba(255,255,255,.78); backdrop-filter: blur(14px); box-shadow: var(--wa-shadow);
+        }
+        .sidebar h4 { margin: 0 0 14px; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--wa-muted); }
+        .sidebar nav { display: grid; gap: 8px; }
+        .sidebar nav a { padding: 9px 10px; border-radius: 10px; font-size: .92rem; line-height: 1.25; transition: .2s ease; color: #5d6973; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(141,178,126,.16); color: #1f3a1e; font-weight: 700; }
+        main { min-width: 0; padding: 0 24px 0 0; }
+        .hero {
+            display: flex; justify-content: center; align-items: center;
+            min-height: auto; padding: 40px 0 44px;
+        }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+            background: rgba(184,217,168,.42); border: 1px solid rgba(141,178,126,.25); color: #355234;
+            font-size: .84rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px;
+        }
+        .hero h1 { margin: 0; font-size: clamp(3rem, 6vw, 5.6rem); line-height: .96; letter-spacing: -.04em; }
+        .hero .subtitle { margin: 18px 0 14px; font-size: clamp(1.05rem, 2vw, 1.45rem); line-height: 1.6; color: var(--wa-muted); max-width: 64ch; }
+        .meta-line { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 22px; }
+        .meta-pill { padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.8); border: 1px solid var(--wa-border); font-size: .9rem; color: #42515a; }
+        .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .hero-link-box {
+            display: inline-flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;
+            padding: 14px 18px; border: 2px solid #111; border-radius: 16px; background: rgba(255,255,255,.78);
+            box-shadow: 0 8px 18px rgba(0,0,0,.08);
+        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; border-radius: 14px; border: 1px solid transparent; font-weight: 700; transition: .2s ease; }
+        .btn-primary { background: linear-gradient(135deg, var(--wa-green-dark), #6f9f63); color: white; box-shadow: 0 12px 24px rgba(98,139,88,.22); }
+        .btn-secondary { background: rgba(255,255,255,.8); border-color: var(--wa-border); color: var(--wa-text); }
+        .btn:hover { transform: translateY(-1px); }
+        .hero-visual, .card, .feature-card, .platform-card, .resource-card, .quote-card, .comparison-wrap, .citation-card {
+            border: 1px solid var(--wa-border); border-radius: 24px; background: var(--wa-card); backdrop-filter: blur(14px); box-shadow: var(--wa-shadow);
+        }
+        .hero-visual { padding: 24px; }
+        .overview-flow { display: grid; gap: 14px; }
+        .overview-step {
+            position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 18px 18px 18px 20px;
+            border-radius: 18px; border: 1px solid rgba(37,50,56,.08); background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(247,250,245,.86));
+        }
+        .overview-step::after { content: ""; position: absolute; left: 24px; bottom: -8px; width: 2px; height: 14px; background: linear-gradient(180deg, rgba(141,178,126,.9), rgba(141,178,126,0)); }
+        .overview-step:last-child::after { display: none; }
+        .overview-step h3 { margin: 0 0 4px; font-size: 1.1rem; }
+        .overview-step p { margin: 0; color: var(--wa-muted); line-height: 1.55; font-size: .95rem; }
+        .arrow-tag { width: 42px; height: 42px; border-radius: 999px; display: grid; place-items: center; background: rgba(184,217,168,.48); color: #31502f; font-size: 1.1rem; }
+        section { padding: 22px 0 8px; scroll-margin-top: 20px; max-width: 1280px; margin-left: auto; margin-right: auto; }
+        .section-title { margin: 0 0 8px; font-size: clamp(1.8rem, 3vw, 2.65rem); letter-spacing: -.03em; }
+        .section-subtitle { margin: 0 0 18px; color: var(--wa-muted); line-height: 1.7; max-width: 80ch; font-size: 1rem; }
+        .card { padding: 22px; }
+        .abstract-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; align-items: start; }
+        .abstract-box { padding: 24px; border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(238,247,234,.8)); border: 1px solid rgba(141,178,126,.18); }
+        .abstract-box p { margin: 0; line-height: 1.85; font-size: 1.02rem; color: #314047; }
+        .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .stat { padding: 16px; border-radius: 18px; background: rgba(255,255,255,.82); border: 1px solid rgba(37,50,56,.08); }
+        .stat strong { display: block; font-size: 1.35rem; margin-bottom: 4px; }
+        .stat span { color: var(--wa-muted); font-size: .92rem; line-height: 1.45; }
+        .story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .story-col { padding: 22px; border-radius: 22px; background: rgba(255,255,255,.76); border: 1px solid var(--wa-border); }
+        .story-col h3 { margin: 0 0 8px; font-size: 1.35rem; }
+        .story-card { display: grid; gap: 14px; }
+        .transition { display: grid; grid-template-columns: 1fr 56px 1fr; gap: 12px; align-items: center; margin-top: 14px; }
+        .transition .box { padding: 16px; border-radius: 16px; border: 1px solid rgba(37,50,56,.08); background: white; }
+        .transition .box .tag { display: inline-block; margin-bottom: 6px; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--wa-muted); }
+        .transition .box strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
+        .transition .box p { margin: 0; color: var(--wa-muted); line-height: 1.6; }
+        .transition .center { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(184,217,168,.65), rgba(142,197,232,.6)); color: #254226; font-size: 1.2rem; }
+        .feature-grid, .platform-grid, .resource-grid { display: grid; gap: 18px; }
+        .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .feature-card, .platform-card, .resource-card { padding: 22px; }
+        .feature-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 14px; }
+        .feature-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+        .purple { background: rgba(181,168,229,.22); color: #5e4c8d; }
+        .green { background: rgba(184,217,168,.22); color: #416234; }
+        .blue { background: rgba(142,197,232,.22); color: #2c6283; }
+        .feature-card h3, .platform-card h3, .resource-card h3 { margin: 10px 0 8px; font-size: 1.3rem; }
+        .feature-card p, .platform-card p, .resource-card p { margin: 0; line-height: 1.75; color: var(--wa-muted); }
+        .bullet-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+        .bullet-list li { display: flex; gap: 10px; align-items: start; color: #314047; }
+        .bullet-list li::before { content: "•"; color: var(--wa-green-dark); font-weight: 900; margin-top: -1px; }
+        .asset-box { margin-top: 16px; padding: 14px; border-radius: 18px; background: rgba(255,255,255,.75); border: 1px solid rgba(37,50,56,.08); }
+        .asset-box img { width: 100%; display: block; border-radius: 14px; }
+        .comparison-wrap { padding: 22px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 980px; font-size: .94rem; }
+        th, td { border: 1px solid rgba(37,50,56,.16); padding: 12px 10px; text-align: center; }
+        thead th { background: rgba(238,247,234,.92); font-weight: 800; }
+        .highlight-row td, .highlight-row th { background: #EAF5E5; font-weight: 800; }
+        .highlight-col { background: rgba(184,217,168,.16); }
+        .platform-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .task-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .task-pills span, .mini-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.85); border: 1px solid rgba(37,50,56,.1); font-size: .82rem; color: #43545e; }
+        .pipeline { display: grid; gap: 16px; }
+        .pipeline-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+        .pipe-step { position: relative; min-height: 104px; border-radius: 18px; padding: 16px; background: white; border: 1px solid rgba(37,50,56,.08); }
+        .pipe-step h4 { margin: 0 0 8px; font-size: 1rem; }
+        .pipe-step p { margin: 0; font-size: .92rem; color: var(--wa-muted); line-height: 1.55; }
+        .pipe-step::after { content: "→"; position: absolute; right: -15px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: rgba(184,217,168,.65); color: #234020; font-weight: 900; }
+        .pipe-step:last-child::after { display: none; }
+        .pipeline-note { padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.8); border: 1px dashed rgba(37,50,56,.14); color: #41515a; line-height: 1.7; }
+        .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+        .tab-btn { padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(37,50,56,.12); background: rgba(255,255,255,.75); cursor: pointer; font-family: inherit; font-weight: 700; color: var(--wa-text); }
+        .tab-btn.active { background: linear-gradient(135deg, rgba(141,178,126,.8), rgba(184,217,168,.74)); color: #1f3b1f; border-color: transparent; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .case-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .case-card { padding: 16px; border-radius: 18px; background: rgba(255,255,255,.9); border: 1px solid rgba(37,50,56,.08); }
+        .case-card h4 { margin: 0 0 8px; }
+        .compare-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+        .compare-box { padding: 12px; border-radius: 14px; background: linear-gradient(135deg, #fff, #f7faf5); border: 1px solid rgba(37,50,56,.08); min-height: 88px; }
+        .compare-box .label { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .08em; color: var(--wa-muted); text-transform: uppercase; margin-bottom: 8px; }
+        .compare-box strong { display: block; margin-bottom: 4px; }
+        .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .citation-card pre { margin: 0; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; background: rgba(255,255,255,.82); border: 1px solid rgba(37,50,56,.08); border-radius: 18px; line-height: 1.7; font-family: Consolas, Monaco, monospace; font-size: .9rem; }
+        .copy-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .footer { grid-column: 1 / -1; padding: 30px 0; text-align: center; color: rgba(37,50,56,.72); background: #1a1a1a; color: white; }
+        .footer-content { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-bottom: 14px; }
+        .footer-links a { font-weight: 700; color: white; transition: .2s ease; }
+        .footer-links a:hover { color: var(--wa-green); }
+        .footer-icon-link { display: inline-flex; align-items: center; gap: 8px; color: white; font-weight: 700; transition: .2s ease; }
+        .footer-icon-link:hover { color: var(--wa-green); }
+        .footer-text { color: rgba(255,255,255,.75); font-size: .95rem; }
+        .section-figure { margin-top: 16px; }
+        .section-figure img { width: 100%; border-radius: 18px; border: 1px solid rgba(37,50,56,.08); background: white; }
+        @media (max-width: 1180px) {
+            .page-shell { grid-template-columns: 1fr; }
+            .sidebar { position: static; width: auto; margin-bottom: 0; }
+            main { padding: 0 24px; }
+            .hero, .abstract-grid, .story-grid, .feature-grid, .platform-grid, .resource-grid, .case-grid, .compare-strip { grid-template-columns: 1fr; }
+            .pipeline-row { grid-template-columns: 1fr; }
+            .pipe-step::after { display: none; }
+        }
+        @media (max-width: 720px) {
+            .page-shell { width: calc(100% - 18px); }
+            .hero h1 { font-size: 2.6rem; }
+            .transition { grid-template-columns: 1fr; }
+            .transition .center { display: none; }
+            .hero-link-box { padding: 12px 14px; gap: 10px; }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="page-shell">
+        <aside class="sidebar">
+            <h4>Contents</h4>
+            <nav>
+                <a href="#overview" class="active">Overview</a>
+                <a href="#why">Why 2.0</a>
+                <a href="#extensions">Three Extensions</a>
+                <a href="#platforms">Cross-Platform Eval</a>
+                <a href="#online-rl">Online RL</a>
+                <a href="#cases">Case Studies</a>
+            </nav>
+        </aside>
 
-    <div class="fixed-sidebar">
-        <h4>Contents</h4>
-        <nav>
-            <a href="#overview" class="active">Overview</a>
-            <a href="#comparison">Benchmark Comparison</a>
-            <a href="#architecture">Evaluation System</a>
-            <a href="#leaderboard">Leaderboard</a>
-            <a href="#examples">Visualization Examples</a>
-        </nav>
-    </div>
-
-    <section class="hero-section">
-        <div>
-            <h1 class="main-title">WorldArena</h1>
-            <p class="subtitle">A Unified Benchmark for Evaluating Perception and Functional Utility of Embodied World Models</p>
-            <div class="action-buttons">
-                <a href="https://github.com/worldarena/WorldArena" class="btn btn-secondary" target="_blank">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-                <a href="https://huggingface.co/spaces/WorldArena/WorldArena" class="btn btn-secondary" target="_blank">
-                    <i class="fas fa-trophy"></i> Leaderboard
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <main>
-        <section id="overview">
-            <h2 class="section-title">Overview</h2>
-            <div class="card">
-                <p style="font-size: 1.1rem; line-height: 1.8; color: #334155;">
-                    <strong style="color: #2563eb;">WorldArena</strong> is a unified benchmark designed to systematically evaluate embodied world models across both <strong style="color: #2563eb;">perceptual</strong> and <strong style="color: #2563eb;">functional</strong> dimensions. WorldArena assesses models through three dimensions: <strong style="color: #2563eb;">video perception quality</strong>, measured with sixteen metrics across six sub-dimensions; <strong style="color: #2563eb;">embodied task functionality</strong>, which evaluates world models as synthetic data engines, policy evaluators, and action planners. Furthermore, we propose <strong style="color: #2563eb;">EWMScore</strong>, a holistic metric integrating multi-dimensional performance into a single interpretable index.This work provides a framework for tracking progress toward truly functional world models in embodied AI.
-                </p>
-            </div>
-        </section>
-
-        <section id="comparison">
-            <h2 class="section-title">Comparison with Existing Benchmarks</h2>
-            <div class="card" style="border: 1px solid #000; box-shadow: none;">
-                <div class="benchmark-table-container" style="width: 100%; overflow-x: auto; margin: 20px 0;">
-                    <table class="benchmark-table" style="width: 100%; border-collapse: collapse; font-size: 0.95rem; color: #000000; background: white; border: 1px solid #000;">
-                        <thead>
-                            <tr style="background-color: #f1f5f9; color: #000000;">
-                                <th rowspan="2" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
-                                    Benchmark
-                                </th>
-                                <th colspan="6" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
-                                    Video Quality
-                                </th>
-                                <th colspan="3" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
-                                    Embodied Tasks
-                                </th>
-                                <th rowspan="2" style="border: 1px solid #000; padding: 12px; font-weight: 900;">
-                                    Human
-                                </th>
-                            </tr>
-                            <tr style="background-color: #f1f5f9; color: #000000;">
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Visual Quality</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Motion Quality</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Content Consist.</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Physics Adher.</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Control ability</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">3D Acc.</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Data Engine</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Policy Eval.</th>
-                                <th style="border: 1px solid #000; padding: 10px; font-weight: 800;">Action Planner</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldModelBench</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldSimBench</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldScore</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">4DWorldBench</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">EWMBench</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WorldEval</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">World-in-World</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td></tr>
-                            <tr><td style="border: 1px solid #000; padding: 10px; text-align: center; padding-left: 20px;">WoW-World-Eval</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #ef4444; font-weight: bold;">✕</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td><td style="border: 1px solid #000; text-align: center; color: #22c55e; font-weight: bold;">✓</td></tr>
-
-                            <tr style="color: #000000; font-weight: 950; font-size: 1.25rem; background-color: #ffffff;">
-                                <td style="border: 1px solid #000; padding: 15px; text-align: center; padding-left: 20px;">WorldArena</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                                <td style="border: 1px solid #000; text-align: center; color: #22c55e;">✓</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
-                    Table 1: Comprehensive comparison of WorldArena with existing world model benchmarks
-                </p>
-            </div>
-        </section>
-
-
-
-        <section id="architecture">
-            <h2 class="section-title">Evaluation System</h2>
-            <p class="section-subtitle">
-                WorldArena's comprehensive evaluation framework encompasses both perceptual quality and functional utility
-            </p>
-            
-            <!-- Perceptual Evaluation -->
-            <div class="card">
-                <h3 class="card-title">Perceptual Evaluation</h3>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    WorldArena measures multi-faceted video quality, comprising 16 numerical metrics across 6 key sub-dimensions,, including visual quality, motion quality, content consistency, physics adherence, 3D accuracy, and controllability:
-                </p>
-                
-                <!-- 插入图片 -->
+        <main>
+            <section class="hero" id="top">
                 <div>
-                    <img src="assets_common/photos/Perceptual evaluation.svg" alt="Perceptual Evaluation Metrics" class="perceptual-image">
-                    <p class="caption" style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
-                        Figure 1: Six dimensions of perceptual evaluation with 16 specific metrics
-                    </p>
-                </div>
-                
-                <!-- 指标网格 -->
-                <div class="metrics-grid">
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">Visual Quality</span></h4>
-                        <ul class="metric-list">
-                            <li>Image Quality</li>
-                            <li>Aesthetic Quality</li>
-                            <li>JEPA Similarity</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">Motion Quality</span></h4>
-                        <ul class="metric-list">
-                            <li>Dynamic Degree</li>
-                            <li>Flow Score</li>
-                            <li>Motion Smoothness</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">Content Consistency</span></h4>
-                        <ul class="metric-list">
-                            <li>Subject Consistency</li>
-                            <li>Background Consistency</li>
-                            <li>Photometric Consistency</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">Physics Adherence</span></h4>
-                        <ul class="metric-list">
-                            <li>Interaction Quality</li>
-                            <li>Trajectory Accuracy</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">3D Accuracy</span></h4>
-                        <ul class="metric-list">
-                            <li>Depth Accuracy</li>
-                            <li>Perspectivity</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="metric-category">
-                        <h4><span class="worldarena-badge">Controllability</span></h4>
-                        <ul class="metric-list">
-                            <li>Instruction Following</li>
-                            <li>Semantic Alignment</li>
-                            <li>Action Following</li>
-                        </ul>
+                    <div style="text-align: center; width: 100%; margin-bottom: 30px;">
+                        <h1 style="margin: 0 0 20px;">WorldArena 2.0</h1>
+                        <h2 style="font-size: 1.4rem; margin: 0 0 20px; color: var(--wa-muted); font-weight: 500;">Extending Embodied World Model Benchmarking on Modality, Functionality and Platform</h2>
+                        <div class="hero-link-box">
+                            <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank" style="color: var(--wa-text);"><i class="fab fa-github" style="font-size: 1.3rem;"></i> GitHub</a>
+                            <a class="footer-icon-link" href="#comparison" style="color: var(--wa-text);"><i class="fas fa-trophy" style="font-size: 1.3rem; color: #FFD700;"></i> Leaderboard</a>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- 修正后的EWMScore公式 -->
-                <div class="formula-box">
-                    <strong>EWMScore</strong> is defined as the arithmetic mean of the 16 basic metrics listed above, with all scores normalized and linearly scaled to a range of [0, 100]. It serves as a comprehensive evaluation metric, where a higher value signifies superior overall model performance in both perception and functional utility.
+                <div></div>
+            </section>
+
+            <section id="overview">
+                <h2 class="section-title">Overview</h2>
+                <p class="section-subtitle">The paper argues that existing embodied world model benchmarks are too narrow: they are mostly vision-only, mostly offline, and mostly simulator-bound. WorldArena 2.0 broadens the benchmark to reflect the requirements of embodied intelligence in the real world.</p>
+                <div class="card abstract-grid">
+                    <div class="abstract-box">
+                        <p>
+                            <strong>WorldArena 2.0</strong> is a standardized benchmark for embodied world models that extends the original WorldArena along three coordinated axes: <strong>modality</strong>, <strong>functionality</strong>, and <strong>platform</strong>. It introduces visuo-tactile evaluation, treats world models as online RL environments, and evaluates across RoboTwin 2.0, LIBERO, and the AgileX split-type ALOHA robot. The goal is not only to measure perceptual quality, but also to verify whether world models remain useful when they must support manipulation, policy improvement, and sim-to-real deployment.
+                        </p>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat"><strong>12</strong><span>embodied world models evaluated across simulation and real-world settings</span></div>
+                        <div class="stat"><strong>3</strong><span>extensions: modality, functionality, and platform</span></div>
+                        <div class="stat"><strong>6</strong><span>cross-platform evaluation tasks spanning sim and real robot</span></div>
+                        <div class="stat"><strong>1</strong><span>unified benchmark story: from prediction to deployment</span></div>
+                    </div>
                 </div>
+            </section>
+
+            <section id="why">
+                <h2 class="section-title">Why WorldArena 2.0</h2>
+                <p class="section-subtitle">The motivation is simple: stronger video prediction does not automatically mean stronger embodied utility. The benchmark therefore pushes evaluation toward richer sensing, closed-loop interaction, and physical deployment.</p>
+                <div class="story-grid">
+                    <div class="story-col">
+                        <h3>WorldArena</h3>
+                        <div class="story-card">
+                            <div class="transition"><div class="box"><span class="tag">Modality</span><strong>Vision-only</strong><p>Single-modality prediction and perception.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Visuo-Tactile</strong><p>Contact-aware evaluation with tactile signals.</p></div></div>
+                            <div class="transition"><div class="box"><span class="tag">Functionality</span><strong>Offline Evaluation</strong><p>Static scoring of video and tasks.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Online RL</strong><p>Interactive rollouts for policy improvement.</p></div></div>
+                            <div class="transition"><div class="box"><span class="tag">Platform</span><strong>Simulator-only</strong><p>Limited to virtual environments.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Real Robot</strong><p>Cross-embodiment sim-to-real evaluation.</p></div></div>
+                        </div>
+                    </div>
+                    <div class="story-col">
+                        <h3>Core Message</h3>
+                        <div class="quote-card card" style="padding:18px;margin:0;border-radius:18px;box-shadow:none;">
+                            <p style="margin:0;line-height:1.85;color:#314047;">
+                                The benchmark is organized around a single narrative: <strong>WorldArena 2.0 extends world model benchmarking from vision-only to visuo-tactile, from offline evaluation to online RL, and from simulator-only to real robot.</strong>
+                            </p>
+                            <div class="task-pills" style="margin-top:16px;">
+                                <span>Multimodal perception</span>
+                                <span>Interactive policy optimization</span>
+                                <span>Sim-to-real robustness</span>
+                            </div>
+                        </div>
+                        <div class="section-figure">
+                            <img src="assets_common/photos/WorldArena2.svg" alt="WorldArena 2.0 overview diagram">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="extensions">
+                <h2 class="section-title">Three Extensions</h2>
+                <p class="section-subtitle">These are the three pillars that the paper repeatedly emphasizes. The page should tell this story first, before any detailed metrics appear.</p>
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <div class="feature-top">
+                            <span class="feature-kicker purple"><i class="fas fa-hand-pointer"></i> Modality</span>
+                            <span class="mini-chip">Purple</span>
+                        </div>
+                        <h3>Vision → Visuo-Tactile</h3>
+                        <p>WorldArena 2.0 introduces tactile-aware evaluation so that world models must reason about contact, force, slip, and material interaction.</p>
+                        <ul class="bullet-list">
+                            <li>Multimodal perception and prediction</li>
+                            <li>Tactile injection via a standardized pipeline</li>
+                            <li>Better coverage of contact-rich manipulation</li>
+                        </ul>
+                        <div class="asset-box">
+                            <img src="assets_common/photos/vtwm_pipeline.svg" alt="Modality illustration">
+                        </div>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-top">
+                            <span class="feature-kicker green"><i class="fas fa-robot"></i> Functionality</span>
+                            <span class="mini-chip">Green</span>
+                        </div>
+                        <h3>Offline Evaluation → Online RL</h3>
+                        <p>The benchmark evaluates whether world models can serve as interactive environments that help train and improve embodied policies, not just predict future frames.</p>
+                        <ul class="bullet-list">
+                            <li>Closed-loop rollouts with policy updates</li>
+                            <li>Reward-aware state transitions</li>
+                            <li>Long-horizon robustness under compounding errors</li>
+                        </ul>
+                        <div class="asset-box">
+                            <img src="assets_common/photos/WM4RL.svg" alt="RL illustration">
+                        </div>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-top">
+                            <span class="feature-kicker blue"><i class="fas fa-warehouse"></i> Platform</span>
+                            <span class="mini-chip">Blue</span>
+                        </div>
+                        <h3>Simulator → Real Robot</h3>
+                        <p>WorldArena 2.0 evaluates cross-embodiment generalization from simulation to a real robotic platform, exposing the sim-to-real gap directly.</p>
+                        <ul class="bullet-list">
+                            <li>RoboTwin 2.0 and LIBERO simulators</li>
+                            <li>AgileX split-type ALOHA physical robot</li>
+                            <li>Deployment-oriented performance signal</li>
+                        </ul>
+                        <div class="asset-box">
+                            <img src="assets_common/photos/platform.svg" alt="Platform illustration">
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+
+            <section id="platforms">
+                <h2 class="section-title">Cross-Platform Evaluation</h2>
+                <p class="section-subtitle">The paper evaluates three different platforms to measure whether model quality transfers from simulation to real-world physical execution.</p>
+                <div class="platform-grid">
+                    <article class="platform-card">
+                        <span class="feature-kicker green"><i class="fas fa-cube"></i> Simulator</span>
+                        <h3>RoboTwin 2.0</h3>
+                        <p>Large-scale bimanual manipulation environment used to test robustness under domain randomization.</p>
+                        <div class="task-pills">
+                            <span>Adjust Bottle</span>
+                            <span>Click Bell</span>
+                        </div>
+                        <p style="margin-top:14px;">Purpose: evaluate whether synthetic trajectories and action planning improve policy learning.</p>
+                    </article>
+                    <article class="platform-card">
+                        <span class="feature-kicker purple"><i class="fas fa-language"></i> Simulator</span>
+                        <h3>LIBERO</h3>
+                        <p>Language-conditioned manipulation benchmark used to diagnose knowledge transfer under structured tasks.</p>
+                        <div class="task-pills">
+                            <span>Turn On Stove</span>
+                        </div>
+                        <p style="margin-top:14px;">Purpose: test generalization under language-driven manipulation settings.</p>
+                    </article>
+                    <article class="platform-card">
+                        <span class="feature-kicker blue"><i class="fas fa-robot"></i> Real World</span>
+                        <h3>AgileX ALOHA</h3>
+                        <p>Physical robot evaluation platform built around an AgileX split-type teleoperation system.</p>
+                        <div class="task-pills">
+                            <span>Pour Water</span>
+                            <span>Wipe Table</span>
+                        </div>
+                        <p style="margin-top:14px;">Purpose: measure real-world deployment capability and expose the sim-to-real gap.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="online-rl">
+                <h2 class="section-title">Online RL Environment</h2>
+                <p class="section-subtitle">This is one of the key contributions of the paper: world models are used as interactive RL environments rather than being scored only as passive predictors.</p>
+                <div class="card pipeline">
+                    <div class="pipeline-row">
+                        <div class="pipe-step">
+                            <h4>World Model</h4>
+                            <p>Predicts future observations conditioned on actions and instructions.</p>
+                        </div>
+                        <div class="pipe-step">
+                            <h4>Reward Model</h4>
+                            <p>Assigns task-relevant reward signals over imagined rollouts.</p>
+                        </div>
+                        <div class="pipe-step">
+                            <h4>GRPO</h4>
+                            <p>Uses the imagined environment to optimize policy updates.</p>
+                        </div>
+                        <div class="pipe-step">
+                            <h4>Policy Update</h4>
+                            <p>Iteratively improves the embodied agent with closed-loop feedback.</p>
+                        </div>
+                        <div class="pipe-step">
+                            <h4>Evaluation</h4>
+                            <p>Measures success rate on simulated and real-world rollouts.</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-note">
+                        The RL formulation in the paper views the real environment as a partially observable Markov decision process and asks whether a learned world model can remain stable, action-consistent, and reward-relevant over long interactive trajectories.
+                    </div>
+                </div>
+            </section>
+
+            <section id="cases">
+                <h2 class="section-title">Case Studies</h2>
+                <p class="section-subtitle">The case-study section follows the three extensions instead of the old 16-metric story. Each tab summarizes representative tasks and the kind of comparison the paper performs.</p>
+                <div class="card">
+                    <div class="tabs" id="case-tabs">
+                        <button class="tab-btn active" data-tab="modality">Modality</button>
+                        <button class="tab-btn" data-tab="functionality">Functionality</button>
+                        <button class="tab-btn" data-tab="platform">Platform</button>
+                    </div>
+
+                    <div class="tab-panel active" data-panel="modality">
+                        <div class="case-grid">
+                            <div class="case-card">
+                                <h4>Insert HDMI</h4>
+                                <p>Tests whether tactile prediction helps with fine-grained contact-rich insertion.</p>
+                                <div class="compare-strip" style="margin-top:12px;">
+                                    <div class="compare-box"><span class="label">Good</span><strong>Aligned tactile contact</strong><span>Stable insertion behavior</span></div>
+                                    <div class="compare-box"><span class="label">Bad</span><strong>Missed contact</strong><span>Weak multimodal grounding</span></div>
+                                    <div class="compare-box"><span class="label">GT</span><strong>Reference sequence</strong><span>Ground-truth tactile trace</span></div>
+                                </div>
+                            </div>
+                            <div class="case-card">
+                                <h4>Lift Bottle</h4>
+                                <p>Highlights the difficulty of long-horizon tactile-aware manipulation.</p>
+                                <div class="compare-strip" style="margin-top:12px;">
+                                    <div class="compare-box"><span class="label">Good</span><strong>Robust grasping</strong><span>Consistent lift behavior</span></div>
+                                    <div class="compare-box"><span class="label">Bad</span><strong>Slip / fail</strong><span>Contact instability</span></div>
+                                    <div class="compare-box"><span class="label">GT</span><strong>Reference</strong><span>True manipulation outcome</span></div>
+                                </div>
+                            </div>
+                            <div class="case-card">
+                                <h4>What it shows</h4>
+                                <p>Visuo-tactile evaluation is about more than image quality: the benchmark checks whether the model perceives physical interaction correctly enough to support manipulation.</p>
+                                <div class="task-pills"><span>PSNR / SSIM</span><span>Task success rate</span><span>Multimodal grounding</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-panel" data-panel="functionality">
+                        <div class="case-grid">
+                            <div class="case-card">
+                                <h4>Embodied Data Engine</h4>
+                                <p>World-model-generated synthetic trajectories are used to train downstream policies, and the gain in policy performance reflects the utility of the world model.</p>
+                                <div class="task-pills"><span>Policy improvement</span><span>Synthetic data</span><span>Training gain</span></div>
+                            </div>
+                            <div class="case-card">
+                                <h4>Embodied Policy Evaluator</h4>
+                                <p>Policies interact with the world model as if it were the environment, and success rate measures whether the model faithfully simulates task execution.</p>
+                                <div class="task-pills"><span>Proxy environment</span><span>Closed-loop rollout</span><span>Success rate</span></div>
+                            </div>
+                            <div class="case-card">
+                                <h4>What it shows</h4>
+                                <p>The paper argues that interactive evaluation is more demanding than offline scoring, because the model must stay stable over iterative policy updates.</p>
+                                <div class="task-pills"><span>Long horizon</span><span>Compounding errors</span><span>Reward relevance</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-panel" data-panel="platform">
+                        <div class="case-grid">
+                            <div class="case-card">
+                                <h4>RoboTwin 2.0</h4>
+                                <p>Simulation case studies on Click Bell and Adjust Bottle illustrate robustness under domain randomization.</p>
+                                <div class="task-pills"><span>Click Bell</span><span>Adjust Bottle</span></div>
+                            </div>
+                            <div class="case-card">
+                                <h4>LIBERO</h4>
+                                <p>Language-conditioned benchmark case studies assess knowledge transfer and structured task execution.</p>
+                                <div class="task-pills"><span>Turn On Stove</span><span>Language grounding</span></div>
+                            </div>
+                            <div class="case-card">
+                                <h4>AgileX ALOHA</h4>
+                                <p>Real-robot cases such as Pour Water and Wipe Table expose the sim-to-real gap and the limits of current models.</p>
+                                <div class="task-pills"><span>Pour Water</span><span>Wipe Table</span><span>Real-world execution</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <span class="footer-text">Licensed under CC BY-SA 4.0</span>
+                <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a class="footer-icon-link" href="#comparison"><i class="fas fa-trophy"></i> Leaderboard</a>
             </div>
-            
-            <!-- Embodied Task Functionality -->
-            <div class="card">
-                <h3 class="card-title">Embodied Task Functionality</h3>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    WorldArena evaluates model performance in three core downstream tasks: <strong>Data Engine</strong>, <strong>Policy Evaluator</strong>, and <strong>Action Planner</strong>.
-
-                </p>
-                
-                <!-- 架构图 -->
-                <div>
-                    <img src="assets_common/photos/Embodied_evaluation.svg" alt="Embodied Task Functionality Evaluation" class="perceptual-image">
-                    <p class="caption" style="color: #000; font-style: italic; text-align: center; margin-top: 10px; font-weight: 600;">
-                        Figure 2: Embodied Task Functionality Evaluation Framework
-                    </p>
-                </div>
-                
-                <!-- 三个功能区域的详细解释 -->
-                <div class="highlight-box">
-                    <h4>Embodied Data Engine</h4>
-                    <p style="line-height: 1.7;">
-                      World models can generate future observations based on external instructions, enabling synthetic data generation to supplement training data for downstream embodied policy models and alleviate the scarcity of real-world data. In this part, we treat world models as embodied data synthesis engines and evaluate their performance by measuring the gain they provide to policy models.
-
-                      We employ a two-phase training procedure. In the first phase, we fine-tune the world model on the RobotTwin 2.0 dataset and generate synthetic videos conditioned on the first frame and external instructions. In the second phase, we freeze the world model’s weights and integrate an inverse dynamics model (IDM) to extract actions from video features. This process produces paired video-action sequences.
-                      We then evaluate the impact of world model–generated synthetic data by training a baseline π₀.₅ policy model with varying amounts of synthetic data. The performance gain of the policy model reflects the world model’s capability to enhance policy learning.
-                      
-                    </p>
-                </div>
-                
-                <div class="highlight-box">
-                    <h4>Embodied Policy Evaluator</h4>
-                    <p style="line-height: 1.7;">
-                        We assess the capability of world models as environment proxies for evaluating policy performance. We train a series of policy models π₀.₅ with varying capabilities using the RoboTwin 2.0 dataset. These models are evaluated by interacting with an action-controllable world model, generating observation videos through a rollout process that continues until it exceeds 20% more frames than the corresponding ground truth video. Task success is evaluated using a VLM, which determines whether the embodied task was executed successfully. 
-
-                        The success rate from the world model's evaluation is compared to that from the RoboTwin simulator. A high correlation between the two suggests effective simulation of real-world dynamics, while a low correlation indicates a mismatch in environmental transition simulation.
-                    </p>
-                </div>
-                
-                <div class="highlight-box">
-                    <h4>Embodied Action Planner</h4>
-                    <p style="line-height: 1.7;">
-                        By predicting future state transitions, world models can function as the action-planning "brain" of an embodied agent. In this part, we investigate the ability of world models to execute embodied tasks in a closed-loop manner. Similar to the data synthesis engine setup, we pair the world model with an inverse dynamics model, where the world model takes textual instructions and the initial frame as input and outputs the corresponding action sequence for future operations. This sequence is then executed in the RoboTwin simulator, and the task success rate is measured to evaluate the world model's performance in closed-loop action execution.
-                    </p>
-                </div>
-            </div>
-            
-        </section>
-
-        <section id="leaderboard">
-            <h2 class="section-title">Leaderboard</h2>
-            <div class="card">
-                <div style="width:100%; overflow:hidden; border-radius: 12px;">
-                    <iframe src="https://worldarena-worldarena.hf.space" style="width:100%; height:720px; border:0;" loading="lazy"></iframe>
-                </div>
-            </div>
-        </section>
-
-        <section id="examples">
-            <h2 class="section-title">Visualization Examples</h2>
-            <div class="card">
-                <div class="dim-tabs" id="dim-tabs-container"></div>
-                <div class="sub-tabs" id="sub-tabs-container"></div>
-
-                <div class="scene-selection-area">
-                    <div class="scene-group" id="scene-group-container"></div>
-                </div>
-
-                <div id="visualizer-area" style="min-height: 800px;">
-                    <div class="video-compare-wrapper" id="primary-compare">
-                        <div class="slider-container" id="slider-container-1">
-                            <div class="video-layer layer-left" id="layer-left-1">
-                                <video id="vid-top-left" loop muted autoplay playsinline></video>
-                                <div class="video-label label-left" id="label-tl" style="display: block !important;">Good Case 1</div>
-                            </div>
-                            <div class="video-layer layer-right">
-                                <video id="vid-top-right" loop muted autoplay playsinline></video>
-                                <div class="video-label label-right" id="label-tr" style="display: block !important;">Good Case 2</div>
-                            </div>
-                            <div class="slider-handle" id="handle-1" style="left: 50%;">
-                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="instruction-display" style="display: none; margin: 20px 0; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ddd;">
-                        <div style="display: flex; gap: 20px;">
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 1 Instruction</span>
-                                <p id="text-good-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #007bff;"></p>
-                            </div>
-                            <div style="width: 1px; background: #eee;"></div>
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 2 Instruction</span>
-                                <p id="text-bad-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #dc3545;"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-compare-wrapper" id="secondary-compare" style="display: none;">
-                        <div class="slider-container" id="slider-container-2">
-                            <div class="video-layer layer-left" id="layer-left-2">
-                                <video id="vid-bottom-left" loop muted autoplay playsinline></video>
-                                <div class="video-label label-left" id="label-bl" style="display: block !important;">Bad Case 1</div>
-                            </div>
-                            <div class="video-layer layer-right">
-                                <video id="vid-bottom-right" loop muted autoplay playsinline></video>
-                                <div class="video-label label-right" id="label-br" style="display: block !important;">Bad Case 2</div>
-                            </div>
-                            <div class="slider-handle" id="handle-2" style="left: 50%;">
-                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 20px;">
-                        <span class="extra-label">Ground Truth</span>
-                        <div class="gt-video-box"><video id="vid-gt" loop muted autoplay playsinline></video></div>
-                    </div>
-                </div>
-
-                    <div id="instruction-display" style="display: none; margin: 20px 0; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ddd;">
-                        <div style="display: flex; gap: 20px;">
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 1 Instruction</span>
-                                <p id="text-good-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #007bff;"></p>
-                            </div>
-                            <div style="width: 1px; background: #eee;"></div>
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase;">Case 2 Instruction</span>
-                                <p id="text-bad-content" style="font-size: 0.95rem; color: #333; margin: 5px 0 0 0; padding-left: 10px; border-left: 3px solid #dc3545;"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-compare-wrapper" id="secondary-compare" style="display: none;">
-                        <div class="slider-container" id="slider-container-2">
-                            <div class="video-layer layer-left">
-                                <video id="vid-bottom-left" loop muted autoplay playsinline></video>
-                                <div class="video-label label-left" id="label-bl" style="display: block !important;">Bad Case 1</div>
-                            </div>
-                            <div class="video-layer layer-right">
-                                <video id="vid-bottom-right" loop muted autoplay playsinline></video>
-                                <div class="video-label label-right" id="label-br" style="display: block !important;">Bad Case 2</div>
-                            </div>
-                            <div class="slider-handle" id="handle-2">
-                                <div class="slider-circle"><i class="fas fa-arrows-alt-h"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 20px;">
-                        <span class="extra-label">Ground Truth</span>
-                        <div class="gt-video-box"><video id="vid-gt" loop muted autoplay playsinline></video></div>
-                    </div>
-                </div>
-
-                    <div id="instruction-display" style="display: none; margin: 30px 0; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #dee2e6; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-                        <div style="display: flex; gap: 30px;">
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.75rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Case 1 Instruction</span>
-                                <div id="text-good-content" style="font-size: 1rem; color: #212529; line-height: 1.5; border-left: 4px solid #007bff; padding-left: 15px;"></div>
-                            </div>
-                            <div style="width: 1px; background: #eee;"></div>
-                            <div style="flex: 1;">
-                                <span style="font-size: 0.75rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Case 2 Instruction</span>
-                                <div id="text-bad-content" style="font-size: 1rem; color: #212529; line-height: 1.5; border-left: 4px solid #dc3545; padding-left: 15px;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="extra-video-container" id="gt-container" style="display: none; margin-top: 30px;">
-                        <span class="extra-label">Ground Truth (GT) Reference</span>
-                        <div class="gt-video-box">
-                            <video id="vid-gt" loop muted autoplay playsinline></video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-    </main>
-
-    <div class="footer">
-        <div style="margin-bottom: 20px;">
-            <a href="https://github.com/worldarena" target="_blank" style="margin: 0 15px; color: white;"><i class="fab fa-github fa-2x"></i></a>
-            <a href="https://huggingface.co/spaces/WorldArena" target="_blank" style="margin: 0 15px; color: white;"><i class="fas fa-trophy fa-2x"></i></a>
-        </div>
-        <p style="opacity: 0.7; font-size: 0.9rem;">
-            Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: #60a5fa;">CC BY-SA 4.0</a>
-        </p>
+        </footer>
     </div>
-
-    <script src="./static/js/worldarena.js"></script>
 </body>
 </html>
