@@ -1,1 +1,0 @@
-Using the ALOHA-AgileX dual-arm robot, Transfer the wearable foot protector shoe **from the table to the mat**

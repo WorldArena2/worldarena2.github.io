@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
@@ -9,11 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="./static/css/worldarena-custom.css">
-
-    <script defer src="./static/js/worldarena-custom.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
         :root {
             --wa-green: #B8D9A8;
@@ -37,441 +34,597 @@
             min-height: 100vh;
         }
         a { color: inherit; text-decoration: none; }
-        .page-shell { width: 100%; max-width: 1280px; margin: 0 auto; padding: 24px 0 56px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
+
+        .page-shell { width: 100%; position: relative; }
         .sidebar {
-            position: sticky; top: 24px; align-self: start; padding: 18px 16px; border: 1px solid rgba(37,50,56,.12);
-            border-radius: 18px; background: rgba(255,255,255,.78); backdrop-filter: blur(14px); box-shadow: var(--wa-shadow);
+            position: fixed;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 240px;
+            padding: 24px 20px;
+            border: 1px solid var(--wa-border);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--wa-shadow);
+            z-index: 1000;
+            max-height: 85vh;
+            overflow-y: auto;
         }
-        .sidebar h4 { margin: 0 0 14px; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--wa-muted); }
-        .sidebar nav { display: grid; gap: 8px; }
-        .sidebar nav a { padding: 9px 10px; border-radius: 10px; font-size: .92rem; line-height: 1.25; transition: .2s ease; color: #5d6973; }
-        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(141,178,126,.16); color: #1f3a1e; font-weight: 700; }
-        main { min-width: 0; padding: 0 24px 0 0; }
-        .hero {
-            display: flex; justify-content: center; align-items: center;
-            min-height: auto; padding: 40px 0 44px;
+        .sidebar h4 { margin: 0 0 18px; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--wa-muted); font-weight: 700; }
+        .sidebar nav { display: flex; flex-direction: column; gap: 10px; }
+        .sidebar nav a {
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: #4a5a64;
+            transition: 0.2s;
         }
-        .badge {
-            display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
-            background: rgba(184,217,168,.42); border: 1px solid rgba(141,178,126,.25); color: #355234;
-            font-size: .84rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px;
+        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(141, 178, 126, 0.2); color: #1f3a1e; font-weight: 700; }
+
+        main {
+            margin-left: 300px;
+            margin-right: 24px;
+            padding: 24px 0 0;
+            max-width: 1280px;
         }
-        .hero h1 { margin: 0; font-size: clamp(3rem, 6vw, 5.6rem); line-height: .96; letter-spacing: -.04em; }
-        .hero .subtitle { margin: 18px 0 14px; font-size: clamp(1.05rem, 2vw, 1.45rem); line-height: 1.6; color: var(--wa-muted); max-width: 64ch; }
-        .meta-line { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 22px; }
-        .meta-pill { padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.8); border: 1px solid var(--wa-border); font-size: .9rem; color: #42515a; }
-        .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
-        .hero-link-box {
-            display: inline-flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;
-            padding: 14px 18px; border: 2px solid #111; border-radius: 16px; background: rgba(255,255,255,.78);
-            box-shadow: 0 8px 18px rgba(0,0,0,.08);
+        section { padding: 20px 0 12px; scroll-margin-top: 28px; }
+        .section-title { margin: 0 0 6px; font-size: clamp(1.8rem, 3vw, 2.65rem); letter-spacing: -0.03em; font-weight: 700; }
+        .abstract-box {
+            padding: 28px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(238,247,234,0.82));
+            border: 1px solid rgba(141,178,126,0.2);
+            margin-bottom: 8px;
         }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; border-radius: 14px; border: 1px solid transparent; font-weight: 700; transition: .2s ease; }
-        .btn-primary { background: linear-gradient(135deg, var(--wa-green-dark), #6f9f63); color: white; box-shadow: 0 12px 24px rgba(98,139,88,.22); }
-        .btn-secondary { background: rgba(255,255,255,.8); border-color: var(--wa-border); color: var(--wa-text); }
-        .btn:hover { transform: translateY(-1px); }
-        .hero-visual, .card, .feature-card, .platform-card, .resource-card, .quote-card, .comparison-wrap, .citation-card {
-            border: 1px solid var(--wa-border); border-radius: 24px; background: var(--wa-card); backdrop-filter: blur(14px); box-shadow: var(--wa-shadow);
+        .abstract-box p { margin: 0; line-height: 1.85; font-size: 1.04rem; color: #2e3f47; }
+        .card, .feature-card, .platform-card {
+            border: 1px solid var(--wa-border);
+            border-radius: 28px;
+            background: var(--wa-card);
+            backdrop-filter: blur(14px);
+            box-shadow: var(--wa-shadow);
+            padding: 24px;
         }
-        .hero-visual { padding: 24px; }
-        .overview-flow { display: grid; gap: 14px; }
-        .overview-step {
-            position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 18px 18px 18px 20px;
-            border-radius: 18px; border: 1px solid rgba(37,50,56,.08); background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(247,250,245,.86));
+        .story-col {
+            padding: 22px;
+            border-radius: 28px;
+            background: rgba(255,255,255,0.78);
+            border: 1px solid var(--wa-border);
+            margin-bottom: 28px;
         }
-        .overview-step::after { content: ""; position: absolute; left: 24px; bottom: -8px; width: 2px; height: 14px; background: linear-gradient(180deg, rgba(141,178,126,.9), rgba(141,178,126,0)); }
-        .overview-step:last-child::after { display: none; }
-        .overview-step h3 { margin: 0 0 4px; font-size: 1.1rem; }
-        .overview-step p { margin: 0; color: var(--wa-muted); line-height: 1.55; font-size: .95rem; }
-        .arrow-tag { width: 42px; height: 42px; border-radius: 999px; display: grid; place-items: center; background: rgba(184,217,168,.48); color: #31502f; font-size: 1.1rem; }
-        section { padding: 22px 0 8px; scroll-margin-top: 20px; max-width: 1280px; margin-left: auto; margin-right: auto; }
-        .section-title { margin: 0 0 8px; font-size: clamp(1.8rem, 3vw, 2.65rem); letter-spacing: -.03em; }
-        .section-subtitle { margin: 0 0 18px; color: var(--wa-muted); line-height: 1.7; max-width: 80ch; font-size: 1rem; }
-        .card { padding: 22px; }
-        .abstract-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; align-items: start; }
-        .abstract-box { padding: 24px; border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(238,247,234,.8)); border: 1px solid rgba(141,178,126,.18); }
-        .abstract-box p { margin: 0; line-height: 1.85; font-size: 1.02rem; color: #314047; }
-        .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-        .stat { padding: 16px; border-radius: 18px; background: rgba(255,255,255,.82); border: 1px solid rgba(37,50,56,.08); }
-        .stat strong { display: block; font-size: 1.35rem; margin-bottom: 4px; }
-        .stat span { color: var(--wa-muted); font-size: .92rem; line-height: 1.45; }
-        .story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-        .story-col { padding: 22px; border-radius: 22px; background: rgba(255,255,255,.76); border: 1px solid var(--wa-border); }
-        .story-col h3 { margin: 0 0 8px; font-size: 1.35rem; }
-        .story-card { display: grid; gap: 14px; }
-        .transition { display: grid; grid-template-columns: 1fr 56px 1fr; gap: 12px; align-items: center; margin-top: 14px; }
-        .transition .box { padding: 16px; border-radius: 16px; border: 1px solid rgba(37,50,56,.08); background: white; }
-        .transition .box .tag { display: inline-block; margin-bottom: 6px; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--wa-muted); }
-        .transition .box strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
-        .transition .box p { margin: 0; color: var(--wa-muted); line-height: 1.6; }
-        .transition .center { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(184,217,168,.65), rgba(142,197,232,.6)); color: #254226; font-size: 1.2rem; }
-        .feature-grid, .platform-grid, .resource-grid { display: grid; gap: 18px; }
-        .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .feature-card, .platform-card, .resource-card { padding: 22px; }
-        .feature-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 14px; }
-        .feature-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-        .purple { background: rgba(181,168,229,.22); color: #5e4c8d; }
-        .green { background: rgba(184,217,168,.22); color: #416234; }
-        .blue { background: rgba(142,197,232,.22); color: #2c6283; }
-        .feature-card h3, .platform-card h3, .resource-card h3 { margin: 10px 0 8px; font-size: 1.3rem; }
-        .feature-card p, .platform-card p, .resource-card p { margin: 0; line-height: 1.75; color: var(--wa-muted); }
-        .bullet-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+        .transition {
+            display: grid;
+            grid-template-columns: 1fr 56px 1fr;
+            gap: 16px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .transition .box {
+            padding: 20px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid rgba(37,50,56,0.08);
+        }
+        .transition .box .tag {
+            display: inline-block;
+            margin-bottom: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--wa-muted);
+        }
+        .transition .center {
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(184,217,168,0.7), rgba(142,197,232,0.6));
+            color: #254226;
+            font-size: 1.3rem;
+        }
+        .feature-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .purple { background: rgba(181,168,229,0.22); color: #5e4c8d; }
+        .green { background: rgba(184,217,168,0.22); color: #416234; }
+        .blue { background: rgba(142,197,232,0.22); color: #2c6283; }
+        .bullet-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
         .bullet-list li { display: flex; gap: 10px; align-items: start; color: #314047; }
-        .bullet-list li::before { content: "•"; color: var(--wa-green-dark); font-weight: 900; margin-top: -1px; }
-        .asset-box { margin-top: 16px; padding: 14px; border-radius: 18px; background: rgba(255,255,255,.75); border: 1px solid rgba(37,50,56,.08); }
-        .asset-box img { width: 100%; display: block; border-radius: 14px; }
-        .comparison-wrap { padding: 22px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 980px; font-size: .94rem; }
-        th, td { border: 1px solid rgba(37,50,56,.16); padding: 12px 10px; text-align: center; }
-        thead th { background: rgba(238,247,234,.92); font-weight: 800; }
-        .highlight-row td, .highlight-row th { background: #EAF5E5; font-weight: 800; }
-        .highlight-col { background: rgba(184,217,168,.16); }
-        .platform-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .task-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .task-pills span, .mini-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.85); border: 1px solid rgba(37,50,56,.1); font-size: .82rem; color: #43545e; }
-        .pipeline { display: grid; gap: 16px; }
-        .pipeline-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
-        .pipe-step { position: relative; min-height: 104px; border-radius: 18px; padding: 16px; background: white; border: 1px solid rgba(37,50,56,.08); }
-        .pipe-step h4 { margin: 0 0 8px; font-size: 1rem; }
-        .pipe-step p { margin: 0; font-size: .92rem; color: var(--wa-muted); line-height: 1.55; }
-        .pipe-step::after { content: "→"; position: absolute; right: -15px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: rgba(184,217,168,.65); color: #234020; font-weight: 900; }
-        .pipe-step:last-child::after { display: none; }
-        .pipeline-note { padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.8); border: 1px dashed rgba(37,50,56,.14); color: #41515a; line-height: 1.7; }
-        .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
-        .tab-btn { padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(37,50,56,.12); background: rgba(255,255,255,.75); cursor: pointer; font-family: inherit; font-weight: 700; color: var(--wa-text); }
-        .tab-btn.active { background: linear-gradient(135deg, rgba(141,178,126,.8), rgba(184,217,168,.74)); color: #1f3b1f; border-color: transparent; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .case-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-        .case-card { padding: 16px; border-radius: 18px; background: rgba(255,255,255,.9); border: 1px solid rgba(37,50,56,.08); }
-        .case-card h4 { margin: 0 0 8px; }
-        .compare-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-        .compare-box { padding: 12px; border-radius: 14px; background: linear-gradient(135deg, #fff, #f7faf5); border: 1px solid rgba(37,50,56,.08); min-height: 88px; }
-        .compare-box .label { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .08em; color: var(--wa-muted); text-transform: uppercase; margin-bottom: 8px; }
-        .compare-box strong { display: block; margin-bottom: 4px; }
-        .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .citation-card pre { margin: 0; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; background: rgba(255,255,255,.82); border: 1px solid rgba(37,50,56,.08); border-radius: 18px; line-height: 1.7; font-family: Consolas, Monaco, monospace; font-size: .9rem; }
-        .copy-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-        .footer { grid-column: 1 / -1; padding: 30px 0; text-align: center; color: rgba(37,50,56,.72); background: #1a1a1a; color: white; }
-        .footer-content { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-bottom: 14px; }
-        .footer-links a { font-weight: 700; color: white; transition: .2s ease; }
-        .footer-links a:hover { color: var(--wa-green); }
-        .footer-icon-link { display: inline-flex; align-items: center; gap: 8px; color: white; font-weight: 700; transition: .2s ease; }
-        .footer-icon-link:hover { color: var(--wa-green); }
-        .footer-text { color: rgba(255,255,255,.75); font-size: .95rem; }
-        .section-figure { margin-top: 16px; }
-        .section-figure img { width: 100%; border-radius: 18px; border: 1px solid rgba(37,50,56,.08); background: white; }
-        @media (max-width: 1180px) {
-            .page-shell { grid-template-columns: 1fr; }
-            .sidebar { position: static; width: auto; margin-bottom: 0; }
-            main { padding: 0 24px; }
-            .hero, .abstract-grid, .story-grid, .feature-grid, .platform-grid, .resource-grid, .case-grid, .compare-strip { grid-template-columns: 1fr; }
-            .pipeline-row { grid-template-columns: 1fr; }
-            .pipe-step::after { display: none; }
+        .bullet-list li::before { content: "•"; color: var(--wa-green-dark); font-weight: 900; }
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-top: 12px;
         }
-        @media (max-width: 720px) {
-            .page-shell { width: calc(100% - 18px); }
-            .hero h1 { font-size: 2.6rem; }
-            .transition { grid-template-columns: 1fr; }
+        .task-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0 8px;
+        }
+        .task-pills span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(37,50,56,0.1);
+            font-size: 0.8rem;
+        }
+        .video-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 28px;
+            justify-content: center;
+        }
+        .video-card {
+            flex: 1;
+            min-width: 240px;
+            background: rgba(255,255,255,0.86);
+            border-radius: 28px;
+            border: 1px solid var(--wa-border);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .video-card video {
+            width: 100%;
+            display: block;
+            background: #111;
+            aspect-ratio: 16 / 9;
+            object-fit: contain;
+            background-color: #000;
+        }
+        .video-info { padding: 14px 16px 18px; }
+        .video-info h4 { margin: 0 0 6px; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .realworld-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+            margin-top: 20px;
+        }
+        .task-group {
+            background: rgba(255,255,255,0.82);
+            border-radius: 32px;
+            border: 1px solid var(--wa-border);
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .task-group h3 {
+            font-size: 1.5rem;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--wa-green);
+            padding-bottom: 8px;
+        }
+        .video-cluster { display: flex; flex-direction: column; gap: 20px; }
+        .exp-item {
+            background: rgba(0,0,0,0.02);
+            border-radius: 20px;
+            padding: 8px;
+        }
+        .exp-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+        }
+        .label-success { background: #B8D9A8; color: #1f471f; }
+        .label-fail { background: #f3c2b0; color: #8b3c2a; }
+        .exp-item video {
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+            aspect-ratio: 16/9;
+            background: #000;
+            object-fit: contain;
+        }
+        .asset-box { margin-top: 24px; border-radius: 24px; background: rgba(255,255,255,0.7); padding: 12px; }
+        .asset-box img { width: 100%; border-radius: 18px; }
+        .section-figure img { width: 100%; border-radius: 28px; margin-bottom: 14px; }
+
+        /* 表格样式（可横向滚动） */
+        .results-table-wrapper {
+            overflow-x: auto;
+            margin: 24px 0 16px;
+            border-radius: 20px;
+            border: 1px solid var(--wa-border);
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            padding: 4px;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            font-weight: 500;
+            min-width: 600px;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid rgba(37, 50, 56, 0.2);
+            padding: 10px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .results-table th {
+            background: rgba(184, 217, 168, 0.3);
+            font-weight: 800;
+            color: #1f3a1e;
+        }
+        .results-table td {
+            background: rgba(255,255,255,0.75);
+        }
+        .results-table .subheader {
+            background: rgba(142, 197, 232, 0.2);
+            font-weight: 700;
+        }
+        .analysis-img {
+            margin: 20px 0 10px;
+            text-align: center;
+        }
+        .analysis-img img {
+            max-width: 100%;
+            border-radius: 24px;
+            box-shadow: var(--wa-shadow);
+            border: 1px solid var(--wa-border);
+        }
+        .caption-text {
+            font-size: 0.85rem;
+            color: var(--wa-muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .footer-black {
+            background: #1a1a1a;
+            color: white;
+            padding: 30px 24px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .footer-text { color: rgba(255, 255, 255, 0.75); font-size: 0.95rem; }
+        .footer-icon-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        .footer-icon-link:hover { color: #B8D9A8; }
+        .footer-icon-link i { font-size: 1.3rem; }
+        .footer-icon-link.trophy i { color: #FFD700; }
+
+        @media (max-width: 1000px) {
+            .sidebar { position: static; transform: none; width: 100%; margin-bottom: 20px; max-height: none; }
+            main { margin-left: 0; margin-right: 0; padding: 0 20px; }
+            .platform-grid, .realworld-grid { grid-template-columns: 1fr; }
+            .transition { grid-template-columns: 1fr; gap: 12px; }
             .transition .center { display: none; }
-            .hero-link-box { padding: 12px 14px; gap: 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="page-shell">
-        <aside class="sidebar">
-            <h4>Contents</h4>
-            <nav>
-                <a href="#overview" class="active">Overview</a>
-                <a href="#why">Why 2.0</a>
-                <a href="#extensions">Three Extensions</a>
-                <a href="#platforms">Cross-Platform Eval</a>
-                <a href="#online-rl">Online RL</a>
-                <a href="#cases">Case Studies</a>
-            </nav>
-        </aside>
+<div class="page-shell">
+    <aside class="sidebar">
+        <h4><i class="fas fa-compass"></i> Contents</h4>
+        <nav>
+            <a href="#overview" class="active"><i class="fas fa-globe"></i> Overview</a>
+            <a href="#why"><i class="fas fa-chart-line"></i> Why 2.0</a>
+            <a href="#visuotactile"><i class="fas fa-hand-peace"></i> Visuotactile Eval</a>
+            <a href="#online-rl"><i class="fas fa-brain"></i> Online RL</a>
+            <a href="#simtoreal"><i class="fas fa-exchange-alt"></i> Sim-to-Real</a>
+            <a href="#realworld"><i class="fas fa-video"></i> Real World Demos</a>
+        </nav>
+    </aside>
 
-        <main>
-            <section class="hero" id="top">
-                <div>
-                    <div style="text-align: center; width: 100%; margin-bottom: 30px;">
-                        <h1 style="margin: 0 0 20px;">WorldArena 2.0</h1>
-                        <h2 style="font-size: 1.4rem; margin: 0 0 20px; color: var(--wa-muted); font-weight: 500;">Extending Embodied World Model Benchmarking on Modality, Functionality and Platform</h2>
-                        <div class="hero-link-box">
-                            <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank" style="color: var(--wa-text);"><i class="fab fa-github" style="font-size: 1.3rem;"></i> GitHub</a>
-                            <a class="footer-icon-link" href="#comparison" style="color: var(--wa-text);"><i class="fas fa-trophy" style="font-size: 1.3rem; color: #FFD700;"></i> Leaderboard</a>
-                        </div>
-                    </div>
-                </div>
-                <div></div>
-            </section>
-
-            <section id="overview">
-                <h2 class="section-title">Overview</h2>
-                <p class="section-subtitle">The paper argues that existing embodied world model benchmarks are too narrow: they are mostly vision-only, mostly offline, and mostly simulator-bound. WorldArena 2.0 broadens the benchmark to reflect the requirements of embodied intelligence in the real world.</p>
-                <div class="card abstract-grid">
-                    <div class="abstract-box">
-                        <p>
-                            <strong>WorldArena 2.0</strong> is a standardized benchmark for embodied world models that extends the original WorldArena along three coordinated axes: <strong>modality</strong>, <strong>functionality</strong>, and <strong>platform</strong>. It introduces visuo-tactile evaluation, treats world models as online RL environments, and evaluates across RoboTwin 2.0, LIBERO, and the AgileX split-type ALOHA robot. The goal is not only to measure perceptual quality, but also to verify whether world models remain useful when they must support manipulation, policy improvement, and sim-to-real deployment.
-                        </p>
-                    </div>
-                    <div class="stat-grid">
-                        <div class="stat"><strong>12</strong><span>embodied world models evaluated across simulation and real-world settings</span></div>
-                        <div class="stat"><strong>3</strong><span>extensions: modality, functionality, and platform</span></div>
-                        <div class="stat"><strong>6</strong><span>cross-platform evaluation tasks spanning sim and real robot</span></div>
-                        <div class="stat"><strong>1</strong><span>unified benchmark story: from prediction to deployment</span></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="why">
-                <h2 class="section-title">Why WorldArena 2.0</h2>
-                <p class="section-subtitle">The motivation is simple: stronger video prediction does not automatically mean stronger embodied utility. The benchmark therefore pushes evaluation toward richer sensing, closed-loop interaction, and physical deployment.</p>
-                <div class="story-grid">
-                    <div class="story-col">
-                        <h3>WorldArena</h3>
-                        <div class="story-card">
-                            <div class="transition"><div class="box"><span class="tag">Modality</span><strong>Vision-only</strong><p>Single-modality prediction and perception.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Visuo-Tactile</strong><p>Contact-aware evaluation with tactile signals.</p></div></div>
-                            <div class="transition"><div class="box"><span class="tag">Functionality</span><strong>Offline Evaluation</strong><p>Static scoring of video and tasks.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Online RL</strong><p>Interactive rollouts for policy improvement.</p></div></div>
-                            <div class="transition"><div class="box"><span class="tag">Platform</span><strong>Simulator-only</strong><p>Limited to virtual environments.</p></div><div class="center"><i class="fas fa-chevron-down"></i></div><div class="box"><span class="tag">WorldArena 2.0</span><strong>Real Robot</strong><p>Cross-embodiment sim-to-real evaluation.</p></div></div>
-                        </div>
-                    </div>
-                    <div class="story-col">
-                        <h3>Core Message</h3>
-                        <div class="quote-card card" style="padding:18px;margin:0;border-radius:18px;box-shadow:none;">
-                            <p style="margin:0;line-height:1.85;color:#314047;">
-                                The benchmark is organized around a single narrative: <strong>WorldArena 2.0 extends world model benchmarking from vision-only to visuo-tactile, from offline evaluation to online RL, and from simulator-only to real robot.</strong>
-                            </p>
-                            <div class="task-pills" style="margin-top:16px;">
-                                <span>Multimodal perception</span>
-                                <span>Interactive policy optimization</span>
-                                <span>Sim-to-real robustness</span>
-                            </div>
-                        </div>
-                        <div class="section-figure">
-                            <img src="assets_common/photos/WorldArena2.svg" alt="WorldArena 2.0 overview diagram">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="extensions">
-                <h2 class="section-title">Three Extensions</h2>
-                <p class="section-subtitle">These are the three pillars that the paper repeatedly emphasizes. The page should tell this story first, before any detailed metrics appear.</p>
-                <div class="feature-grid">
-                    <article class="feature-card">
-                        <div class="feature-top">
-                            <span class="feature-kicker purple"><i class="fas fa-hand-pointer"></i> Modality</span>
-                            <span class="mini-chip">Purple</span>
-                        </div>
-                        <h3>Vision → Visuo-Tactile</h3>
-                        <p>WorldArena 2.0 introduces tactile-aware evaluation so that world models must reason about contact, force, slip, and material interaction.</p>
-                        <ul class="bullet-list">
-                            <li>Multimodal perception and prediction</li>
-                            <li>Tactile injection via a standardized pipeline</li>
-                            <li>Better coverage of contact-rich manipulation</li>
-                        </ul>
-                        <div class="asset-box">
-                            <img src="assets_common/photos/vtwm_pipeline.svg" alt="Modality illustration">
-                        </div>
-                    </article>
-
-                    <article class="feature-card">
-                        <div class="feature-top">
-                            <span class="feature-kicker green"><i class="fas fa-robot"></i> Functionality</span>
-                            <span class="mini-chip">Green</span>
-                        </div>
-                        <h3>Offline Evaluation → Online RL</h3>
-                        <p>The benchmark evaluates whether world models can serve as interactive environments that help train and improve embodied policies, not just predict future frames.</p>
-                        <ul class="bullet-list">
-                            <li>Closed-loop rollouts with policy updates</li>
-                            <li>Reward-aware state transitions</li>
-                            <li>Long-horizon robustness under compounding errors</li>
-                        </ul>
-                        <div class="asset-box">
-                            <img src="assets_common/photos/WM4RL.svg" alt="RL illustration">
-                        </div>
-                    </article>
-
-                    <article class="feature-card">
-                        <div class="feature-top">
-                            <span class="feature-kicker blue"><i class="fas fa-warehouse"></i> Platform</span>
-                            <span class="mini-chip">Blue</span>
-                        </div>
-                        <h3>Simulator → Real Robot</h3>
-                        <p>WorldArena 2.0 evaluates cross-embodiment generalization from simulation to a real robotic platform, exposing the sim-to-real gap directly.</p>
-                        <ul class="bullet-list">
-                            <li>RoboTwin 2.0 and LIBERO simulators</li>
-                            <li>AgileX split-type ALOHA physical robot</li>
-                            <li>Deployment-oriented performance signal</li>
-                        </ul>
-                        <div class="asset-box">
-                            <img src="assets_common/photos/platform.svg" alt="Platform illustration">
-                        </div>
-                    </article>
-                </div>
-            </section>
-
-
-            <section id="platforms">
-                <h2 class="section-title">Cross-Platform Evaluation</h2>
-                <p class="section-subtitle">The paper evaluates three different platforms to measure whether model quality transfers from simulation to real-world physical execution.</p>
-                <div class="platform-grid">
-                    <article class="platform-card">
-                        <span class="feature-kicker green"><i class="fas fa-cube"></i> Simulator</span>
-                        <h3>RoboTwin 2.0</h3>
-                        <p>Large-scale bimanual manipulation environment used to test robustness under domain randomization.</p>
-                        <div class="task-pills">
-                            <span>Adjust Bottle</span>
-                            <span>Click Bell</span>
-                        </div>
-                        <p style="margin-top:14px;">Purpose: evaluate whether synthetic trajectories and action planning improve policy learning.</p>
-                    </article>
-                    <article class="platform-card">
-                        <span class="feature-kicker purple"><i class="fas fa-language"></i> Simulator</span>
-                        <h3>LIBERO</h3>
-                        <p>Language-conditioned manipulation benchmark used to diagnose knowledge transfer under structured tasks.</p>
-                        <div class="task-pills">
-                            <span>Turn On Stove</span>
-                        </div>
-                        <p style="margin-top:14px;">Purpose: test generalization under language-driven manipulation settings.</p>
-                    </article>
-                    <article class="platform-card">
-                        <span class="feature-kicker blue"><i class="fas fa-robot"></i> Real World</span>
-                        <h3>AgileX ALOHA</h3>
-                        <p>Physical robot evaluation platform built around an AgileX split-type teleoperation system.</p>
-                        <div class="task-pills">
-                            <span>Pour Water</span>
-                            <span>Wipe Table</span>
-                        </div>
-                        <p style="margin-top:14px;">Purpose: measure real-world deployment capability and expose the sim-to-real gap.</p>
-                    </article>
-                </div>
-            </section>
-
-            <section id="online-rl">
-                <h2 class="section-title">Online RL Environment</h2>
-                <p class="section-subtitle">This is one of the key contributions of the paper: world models are used as interactive RL environments rather than being scored only as passive predictors.</p>
-                <div class="card pipeline">
-                    <div class="pipeline-row">
-                        <div class="pipe-step">
-                            <h4>World Model</h4>
-                            <p>Predicts future observations conditioned on actions and instructions.</p>
-                        </div>
-                        <div class="pipe-step">
-                            <h4>Reward Model</h4>
-                            <p>Assigns task-relevant reward signals over imagined rollouts.</p>
-                        </div>
-                        <div class="pipe-step">
-                            <h4>GRPO</h4>
-                            <p>Uses the imagined environment to optimize policy updates.</p>
-                        </div>
-                        <div class="pipe-step">
-                            <h4>Policy Update</h4>
-                            <p>Iteratively improves the embodied agent with closed-loop feedback.</p>
-                        </div>
-                        <div class="pipe-step">
-                            <h4>Evaluation</h4>
-                            <p>Measures success rate on simulated and real-world rollouts.</p>
-                        </div>
-                    </div>
-                    <div class="pipeline-note">
-                        The RL formulation in the paper views the real environment as a partially observable Markov decision process and asks whether a learned world model can remain stable, action-consistent, and reward-relevant over long interactive trajectories.
-                    </div>
-                </div>
-            </section>
-
-            <section id="cases">
-                <h2 class="section-title">Case Studies</h2>
-                <p class="section-subtitle">The case-study section follows the three extensions instead of the old 16-metric story. Each tab summarizes representative tasks and the kind of comparison the paper performs.</p>
-                <div class="card">
-                    <div class="tabs" id="case-tabs">
-                        <button class="tab-btn active" data-tab="modality">Modality</button>
-                        <button class="tab-btn" data-tab="functionality">Functionality</button>
-                        <button class="tab-btn" data-tab="platform">Platform</button>
-                    </div>
-
-                    <div class="tab-panel active" data-panel="modality">
-                        <div class="case-grid">
-                            <div class="case-card">
-                                <h4>Insert HDMI</h4>
-                                <p>Tests whether tactile prediction helps with fine-grained contact-rich insertion.</p>
-                                <div class="compare-strip" style="margin-top:12px;">
-                                    <div class="compare-box"><span class="label">Good</span><strong>Aligned tactile contact</strong><span>Stable insertion behavior</span></div>
-                                    <div class="compare-box"><span class="label">Bad</span><strong>Missed contact</strong><span>Weak multimodal grounding</span></div>
-                                    <div class="compare-box"><span class="label">GT</span><strong>Reference sequence</strong><span>Ground-truth tactile trace</span></div>
-                                </div>
-                            </div>
-                            <div class="case-card">
-                                <h4>Lift Bottle</h4>
-                                <p>Highlights the difficulty of long-horizon tactile-aware manipulation.</p>
-                                <div class="compare-strip" style="margin-top:12px;">
-                                    <div class="compare-box"><span class="label">Good</span><strong>Robust grasping</strong><span>Consistent lift behavior</span></div>
-                                    <div class="compare-box"><span class="label">Bad</span><strong>Slip / fail</strong><span>Contact instability</span></div>
-                                    <div class="compare-box"><span class="label">GT</span><strong>Reference</strong><span>True manipulation outcome</span></div>
-                                </div>
-                            </div>
-                            <div class="case-card">
-                                <h4>What it shows</h4>
-                                <p>Visuo-tactile evaluation is about more than image quality: the benchmark checks whether the model perceives physical interaction correctly enough to support manipulation.</p>
-                                <div class="task-pills"><span>PSNR / SSIM</span><span>Task success rate</span><span>Multimodal grounding</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-panel" data-panel="functionality">
-                        <div class="case-grid">
-                            <div class="case-card">
-                                <h4>Embodied Data Engine</h4>
-                                <p>World-model-generated synthetic trajectories are used to train downstream policies, and the gain in policy performance reflects the utility of the world model.</p>
-                                <div class="task-pills"><span>Policy improvement</span><span>Synthetic data</span><span>Training gain</span></div>
-                            </div>
-                            <div class="case-card">
-                                <h4>Embodied Policy Evaluator</h4>
-                                <p>Policies interact with the world model as if it were the environment, and success rate measures whether the model faithfully simulates task execution.</p>
-                                <div class="task-pills"><span>Proxy environment</span><span>Closed-loop rollout</span><span>Success rate</span></div>
-                            </div>
-                            <div class="case-card">
-                                <h4>What it shows</h4>
-                                <p>The paper argues that interactive evaluation is more demanding than offline scoring, because the model must stay stable over iterative policy updates.</p>
-                                <div class="task-pills"><span>Long horizon</span><span>Compounding errors</span><span>Reward relevance</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-panel" data-panel="platform">
-                        <div class="case-grid">
-                            <div class="case-card">
-                                <h4>RoboTwin 2.0</h4>
-                                <p>Simulation case studies on Click Bell and Adjust Bottle illustrate robustness under domain randomization.</p>
-                                <div class="task-pills"><span>Click Bell</span><span>Adjust Bottle</span></div>
-                            </div>
-                            <div class="case-card">
-                                <h4>LIBERO</h4>
-                                <p>Language-conditioned benchmark case studies assess knowledge transfer and structured task execution.</p>
-                                <div class="task-pills"><span>Turn On Stove</span><span>Language grounding</span></div>
-                            </div>
-                            <div class="case-card">
-                                <h4>AgileX ALOHA</h4>
-                                <p>Real-robot cases such as Pour Water and Wipe Table expose the sim-to-real gap and the limits of current models.</p>
-                                <div class="task-pills"><span>Pour Water</span><span>Wipe Table</span><span>Real-world execution</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <footer class="footer">
-            <div class="footer-content">
-                <span class="footer-text">Licensed under CC BY-SA 4.0</span>
-                <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                <a class="footer-icon-link" href="#comparison"><i class="fas fa-trophy"></i> Leaderboard</a>
+    <main>
+        <!-- Hero -->
+        <section class="hero" id="top" style="text-align: center; padding-bottom: 20px;">
+            <h1 style="font-size: clamp(2.8rem, 8vw, 4.5rem); margin: 0 0 12px;">WorldArena 2.0</h1>
+            <h2 style="font-size: 1.35rem; font-weight: 500; color: var(--wa-muted); max-width: 860px; margin: 0 auto 24px;">
+                Extending Embodied World Model Benchmarking on Modality, Functionality and Platform
+            </h2>
+            <div class="hero-link-box" style="display: inline-flex; gap: 20px; background: rgba(255,255,255,0.8); padding: 12px 28px; border-radius: 60px; backdrop-filter: blur(8px);">
+                <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank" style="color: var(--wa-text);"><i class="fab fa-github"></i> GitHub</a>
+                <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank" style="color: var(--wa-text);"><i class="fas fa-trophy" style="color: #FFD700;"></i> Leaderboard</a>
             </div>
-        </footer>
+        </section>
+
+        <!-- Overview -->
+        <section id="overview">
+            <h2 class="section-title">Overview</h2>
+            <div class="abstract-box">
+                <p><strong>WorldArena 2.0</strong> is a standardized benchmark for embodied world models that extends the original WorldArena along three coordinated axes: <strong>modality</strong>, <strong>functionality</strong>, and <strong>platform</strong>. It introduces visuo-tactile evaluation, treats world models as online RL environments, and evaluates across RoboTwin 2.0, LIBERO, and the AgileX split-type ALOHA robot. The goal is not only to measure perceptual quality, but also to verify whether world models remain useful when they must support manipulation, policy improvement, and sim-to-real deployment.</p>
+            </div>
+        </section>
+
+        <!-- Why 2.0 -->
+        <section id="why">
+            <h2 class="section-title">From WorldArena to WorldArena 2.0</h2>
+            <div class="story-col">
+                <div class="section-figure">
+                    <img src="assets_common/photos/WorldArena2.svg" alt="WorldArena 2.0 overview diagram" style="width:100%;">
+                </div>
+                <div class="transition">
+                    <div class="box"><span class="tag">Modality</span><strong>Vision-only</strong><p>Single-modality prediction and perception.</p></div>
+                    <div class="center"><i class="fas fa-chevron-right"></i></div>
+                    <div class="box"><span class="tag">Modality</span><strong>Visuo-Tactile</strong><p>Contact-aware evaluation with tactile signals.</p></div>
+                </div>
+                <div class="transition">
+                    <div class="box"><span class="tag">Functionality</span><strong>Offline Evaluation</strong><p>Static scoring of video and tasks.</p></div>
+                    <div class="center"><i class="fas fa-chevron-right"></i></div>
+                    <div class="box"><span class="tag">Functionality</span><strong>Online RL</strong><p>Interactive rollouts for policy improvement.</p></div>
+                </div>
+                <div class="transition">
+                    <div class="box"><span class="tag">Platform</span><strong>Simulator-only</strong><p>Limited to virtual environments.</p></div>
+                    <div class="center"><i class="fas fa-chevron-right"></i></div>
+                    <div class="box"><span class="tag">Platform</span><strong>Real Robot</strong><p>Cross-embodiment sim-to-real evaluation.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visuotactile Evaluation + 表格 -->
+        <section id="visuotactile">
+            <h2 class="section-title">Visuotactile Evaluation</h2>
+            <div class="feature-card" style="margin-bottom: 20px;">
+                <div class="feature-top">
+                    <span class="feature-kicker purple"><i class="fas fa-hand-pointer"></i> Modality Extension</span>
+                </div>
+                <h3>Vision → Visuo-Tactile</h3>
+                <p>WorldArena 2.0 introduces tactile-aware evaluation so that world models must reason about contact, force, slip, and material interaction.</p>
+                <ul class="bullet-list">
+                    <li>Multimodal perception and prediction</li>
+                    <li>Tactile injection via a standardized pipeline</li>
+                    <li>Better coverage of contact-rich manipulation</li>
+                </ul>
+                <div class="asset-box">
+                    <img src="assets_common/photos/vtwm_pipeline.svg" alt="Modality illustration">
+                </div>
+            </div>
+
+            <div class="video-showcase">
+                <div class="video-card">
+                    <video autoplay muted loop playsinline preload="auto">
+                        <source src="assets/videos/Vitec/Insert_HDMI.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-info"><h4><i class="fas fa-plug"></i> Insert HDMI</h4></div>
+                </div>
+                <div class="video-card">
+                    <video autoplay muted loop playsinline preload="auto">
+                        <source src="assets/videos/Vitec/Lift_Bottle.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-info"><h4><i class="fas fa-flask"></i> Lift Bottle</h4></div>
+                </div>
+            </div>
+
+            <!-- 触觉预测质量与任务成功率表格 -->
+            <div class="results-table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr><th rowspan="2">Model</th><th colspan="2">Tactile Prediction Quality</th><th colspan="3">Task Success Rate (%)</th></tr>
+                        <tr><th>PSNR ↑</th><th>SSIM ↑</th><th>Insert HDMI</th><th>Lift Bottle</th><th>Avg.</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ACT (Baseline)</td><td>--</td><td>--</td><td>20</td><td>80</td><td>50</td></tr>
+                        <tr><td>Vidar</td><td>13.97</td><td>0.278</td><td>70</td><td>0</td><td>35</td></tr>
+                        <tr><td>Genie Envisioner</td><td>13.36</td><td>0.456</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Wan2.2</td><td><strong>21.26</strong></td><td><strong>0.746</strong></td><td><strong>100</strong></td><td>0</td><td>50</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Online RL Evaluation + 表格 + 长时程分析 -->
+        <section id="online-rl">
+            <h2 class="section-title">Evaluation as RL Environments</h2>
+            <div class="feature-card" style="margin-bottom: 20px;">
+                <div class="feature-top"><span class="feature-kicker green"><i class="fas fa-robot"></i> Functionality Extension</span></div>
+                <h3>Offline Evaluation → Online RL</h3>
+                <p>The benchmark evaluates whether world models can serve as interactive environments that help train and improve embodied policies, not just predict future frames.</p>
+                <ul class="bullet-list">
+                    <li>Closed-loop rollouts with policy updates</li>
+                    <li>Reward-aware state transitions</li>
+                    <li>Long-horizon robustness under compounding errors</li>
+                </ul>
+                <div class="asset-box"><img src="assets_common/photos/WM4RL.svg" alt="RL illustration"></div>
+            </div>
+
+            <div class="video-showcase">
+                <div class="video-card">
+                    <video autoplay muted loop playsinline preload="auto">
+                        <source src="assets/videos/RL_env/click_bell.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-info"><h4><i class="fas fa-bell"></i> Click Bell</h4></div>
+                </div>
+                <div class="video-card">
+                    <video autoplay muted loop playsinline preload="auto">
+                        <source src="assets/videos/RL_env/adjust_bottle.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-info"><h4><i class="fas fa-wrench"></i> Adjust Bottle</h4></div>
+                </div>
+            </div>
+
+            <!-- RL对比表格 (代理/VLM/相似度) -->
+            <div class="results-table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr><th rowspan="3">Method</th><th colspan="2">Proxy-based</th><th colspan="2">VLM-based</th><th colspan="2">Similarity-based</th></tr>
+                        <tr><th>Click Bell</th><th>Adjust Bottle</th><th>Click Bell</th><th>Adjust Bottle</th><th>Click Bell</th><th>Adjust Bottle</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>SFT</td><td>43.75</td><td>55.08</td><td>43.75</td><td>55.08</td><td>43.75</td><td>55.08</td></tr>
+                        <tr><td>Simulator-based RL</td><td>87.30</td><td>78.90</td><td>87.45</td><td>78.90</td><td>87.45</td><td>78.90</td></tr>
+                        <tr><td>OpenSora</td><td>56.25</td><td>60.16</td><td>55.27</td><td>57.03</td><td>53.13</td><td>58.00</td></tr>
+                        <tr><td>IRASim</td><td>53.13</td><td>61.33</td><td>53.52</td><td>58.98</td><td>50.78</td><td>59.38</td></tr>
+                        <tr><td>iVideoGPT</td><td>52.53</td><td>56.25</td><td>48.44</td><td>58.59</td><td>52.15</td><td>60.93</td></tr>
+                        <tr><td>Cosmos-Predict-2.5(action)</td><td>67.38</td><td>63.48</td><td>54.10</td><td>58.40</td><td>63.09</td><td>61.13</td></tr>
+                        <tr><td>RoboScape</td><td>68.75</td><td>60.74</td><td>55.46</td><td>59.38</td><td>63.48</td><td>59.18</td></tr>
+                        <tr><td>Ctrl-World</td><td>69.53</td><td><strong>70.70</strong></td><td>66.80</td><td><strong>65.04</strong></td><td>69.92</td><td><strong>66.02</strong></td></tr>
+                        <tr><td>WoVR</td><td><strong>75.00</strong></td><td>67.19</td><td><strong>69.38</strong></td><td>64.45</td><td><strong>72.07</strong></td><td>61.35</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 长时程稳定性分析 -->
+            <div style="margin-top: 28px;">
+                <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Analysis of world model and policy interaction step</h3>
+                <p>In evaluating world models as RL environments, we have also analyzed the success rate curves of the policies with increasing the number of policy-environment interaction steps, with the results presented in Figure below. The results indicate that nearly all models can guide policy updates to varying degrees as the number of interaction steps increases.</p>
+                <div class="analysis-img">
+                    <img src="assets_common/photos/policy_success.png" alt="Policy success rate vs interaction steps">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sim-to-Real Evaluation + 跨平台表格 -->
+        <section id="simtoreal">
+            <h2 class="section-title">Sim-to-Real Evaluation</h2>
+            <div class="feature-card" style="margin-bottom: 24px;">
+                <div class="feature-top"><span class="feature-kicker blue"><i class="fas fa-warehouse"></i> Platform Extension</span></div>
+                <h3>Simulator → Real Robot</h3>
+                <p>WorldArena 2.0 evaluates cross-embodiment generalization from simulation to a real robotic platform, exposing the sim-to-real gap directly.</p>
+                <ul class="bullet-list">
+                    <li>RoboTwin 2.0 and LIBERO simulators</li>
+                    <li>AgileX split-type ALOHA physical robot</li>
+                    <li>Deployment-oriented performance signal</li>
+                </ul>
+            </div>
+
+            <div class="platform-grid">
+                <div class="platform-card"><span class="feature-kicker green"><i class="fas fa-cube"></i> Simulator</span><h3>RoboTwin 2.0</h3><p>Large-scale bimanual manipulation environment used to test robustness under domain randomization.</p><div class="task-pills"><span>Adjust Bottle</span><span>Click Bell</span></div></div>
+                <div class="platform-card"><span class="feature-kicker purple"><i class="fas fa-language"></i> Simulator</span><h3>LIBERO</h3><p>Language-conditioned manipulation benchmark to diagnose knowledge transfer under structured tasks.</p><div class="task-pills"><span>Turn On Stove</span></div></div>
+                <div class="platform-card"><span class="feature-kicker blue"><i class="fas fa-robot"></i> Real World</span><h3>AgileX ALOHA</h3><p>Physical robot evaluation platform built around an AgileX split-type teleoperation system.</p><div class="task-pills"><span>Pour Water</span><span>Wipe Table</span></div></div>
+            </div>
+
+            <!-- 跨平台表格（数据引擎 & 动作规划器） -->
+            <div class="results-table-wrapper" style="margin-top: 24px;">
+                <table class="results-table" style="min-width: 800px;">
+                    <thead>
+                        <tr><th rowspan="2">Model</th><th colspan="4">RoboTwin 2.0</th><th colspan="2">LIBERO</th><th colspan="4">Real‑World</th></tr>
+                        <tr><th colspan="2">Data Engine</th><th colspan="2">Action Planner</th><th>Data Engine</th><th>Action Planner</th><th colspan="2">Data Engine</th><th colspan="2">Action Planner</th></tr>
+                        <tr><th></th><th>Task1</th><th>Task2</th><th>Task1</th><th>Task2</th><th>Task1</th><th>Task1</th><th>Task1</th><th>Task2</th><th>Task1</th><th>Task2</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>GigaWorld</td><td>2</td><td>13</td><td>6</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Genie Envisioner</td><td>7</td><td>21</td><td>10</td><td>20</td><td>2</td><td>6</td><td>0</td><td>0</td><td>0</td><td>20</td></tr>
+                        <tr><td>TesserAct</td><td>1</td><td>35</td><td>1</td><td>35</td><td>34</td><td>38</td><td>0</td><td>0</td><td>0</td><td>30</td></tr>
+                        <tr><td>Vidar</td><td>13</td><td>53</td><td>2</td><td>19</td><td>22</td><td>14</td><td>40</td><td>0</td><td>30</td><td>10</td></tr>
+                        <tr><td>Wan2.2</td><td>15</td><td>41</td><td>12</td><td>20</td><td>10</td><td>24</td><td>10</td><td>0</td><td>10</td><td>0</td></tr>
+                        <tr><td>CogVideoX</td><td>3</td><td>28</td><td>8</td><td>16</td><td>0</td><td>2</td><td>10</td><td>10</td><td>0</td><td>50</td></tr>
+                    </tbody>
+                </table>
+                <div class="caption-text" style="margin-top: 8px;">Task success rates (%) of world models as embodied data engines and action planners across three platforms.</div>
+            </div>
+        </section>
+
+        <!-- Real World Demos -->
+        <section id="realworld">
+            <h2 class="section-title">Real World Demos</h2>
+            <div class="realworld-grid">
+                <div class="task-group">
+                    <h3><i class="fas fa-fill-drip"></i> Pour Water</h3>
+                    <div class="video-cluster">
+                        <div class="exp-item"><div class="exp-label label-success"><i class="fas fa-check-circle"></i> Success</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/pour_success.mp4" type="video/mp4"></video></div>
+                        <div class="exp-item"><div class="exp-label label-fail"><i class="fas fa-times-circle"></i> Failure Case 1</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/pour_fail_1.mp4" type="video/mp4"></video></div>
+                        <div class="exp-item"><div class="exp-label label-fail"><i class="fas fa-times-circle"></i> Failure Case 2</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/pour_fail_2.mp4" type="video/mp4"></video></div>
+                    </div>
+                </div>
+                <div class="task-group">
+                    <h3><i class="fas fa-broom"></i> Wipe Table</h3>
+                    <div class="video-cluster">
+                        <div class="exp-item"><div class="exp-label label-success"><i class="fas fa-check-circle"></i> Success</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/wipe_success.mp4" type="video/mp4"></video></div>
+                        <div class="exp-item"><div class="exp-label label-fail"><i class="fas fa-times-circle"></i> Failure Case 1</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/wipe_fail_1.mp4" type="video/mp4"></video></div>
+                        <div class="exp-item"><div class="exp-label label-fail"><i class="fas fa-times-circle"></i> Failure Case 2</div><video autoplay muted loop playsinline preload="auto"><source src="assets/videos/realworld/wipe_fail_2.mp4" type="video/mp4"></video></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="footer-black">
+    <div class="footer-content">
+        <span class="footer-text">Licensed under CC BY-SA 4.0</span>
+        <a class="footer-icon-link" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+        <a class="footer-icon-link trophy" href="https://github.com/WorldArena2/WorldArena-2.0" target="_blank"><i class="fas fa-trophy"></i> Leaderboard</a>
     </div>
+</footer>
+
+<script>
+    (function() {
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        const sections = Array.from(navLinks).map(link => {
+            const hash = link.getAttribute('href');
+            if (hash && hash !== '#') return document.querySelector(hash);
+            return null;
+        }).filter(Boolean);
+        function updateActive() {
+            let current = '';
+            const scrollPos = window.scrollY + 100;
+            for (let sec of sections) {
+                if (sec) {
+                    const offsetTop = sec.offsetTop;
+                    const offsetBottom = offsetTop + sec.offsetHeight;
+                    if (scrollPos >= offsetTop && scrollPos < offsetBottom) {
+                        current = sec.getAttribute('id');
+                        break;
+                    }
+                }
+            }
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href').substring(1);
+                if (href === current) link.classList.add('active');
+            });
+        }
+        window.addEventListener('scroll', updateActive);
+        window.addEventListener('load', updateActive);
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    history.pushState(null, null, `#${targetId}`);
+                    updateActive();
+                }
+            });
+        });
+        if (window.location.hash) {
+            const initEl = document.querySelector(window.location.hash);
+            if (initEl) initEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    })();
+</script>
 </body>
 </html>
